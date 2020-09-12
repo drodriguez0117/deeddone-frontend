@@ -48,18 +48,19 @@ export default {
         this.sigupFailed(response)
         return
       }
-      localStorage.csrf = response.data.csrf
-      localStorage.signedIn = true
-      this.error = ''
-      this.$router.replace('/listings')
+      this.$http.plain.get('/me')
+        .then(meResponse => {
+          this.$store.commit('setCurrentUser', { currentUser: meResponse.data, csrf: response.data.csrf })
+          this.error = ''
+          this.$router.replace('/listings')
+        })
     },
     signupFailed (error) {
       this.error = (error.response && error.response.data && error.response.data.error)
-      delete localStorage.csrf
-      delete localStorage.signedIn
+      this.$store.commit('unsetCurrentUser')
     },
     checkSignedIn () {
-      if (localStorage.signedIn) {
+      if (this.$store.signedIn) {
         this.$router.replace('/listings')
       }
     }
