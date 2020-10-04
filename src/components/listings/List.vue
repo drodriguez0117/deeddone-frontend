@@ -1,6 +1,6 @@
 <template>
   <div class="listings">
-    <button v-on:click="signOut">Sign Out</button>
+    <button v-on:click="signOut" v-show="this.user_email">Sign Out</button>
     <div class="alert alert-danger" v-if="error">{{ error }}</div>
     <h3> {{ user_email }} Listings</h3>
     <ul class="list-group">
@@ -53,7 +53,7 @@ export default {
       this.$http.secured.delete('/signin')
         .then(response => {
           this.$store.commit('unsetCurrentUser')
-          this.$router.replace('/signin')
+          // this.$router.replace('/')
         })
         .catch(error => this.setError(error, 'Cannot sign out'))
     }

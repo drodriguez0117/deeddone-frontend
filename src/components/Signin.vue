@@ -45,7 +45,6 @@ export default {
         this.$store.commit('setCurrentUser', { currentUser: response.data })
         this.error = ''
         this.$router.push({path: '/' + response.data.id})
-        // this.$router.replace('/listings')
       }
     },
     signinFailed (error) {

@@ -11,17 +11,17 @@ export default new Router({
   routes: [
     {
       path: '/signin',
-      name: 'Signin',
+      name: 'signin',
       component: Signin
     },
     {
       path: '/signup',
-      name: 'Signup',
+      name: 'signup',
       component: Signup
     },
     {
       path: '/',
-      name: 'List',
+      name: 'list',
       component: List
     },
     {
