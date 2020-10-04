@@ -15,7 +15,7 @@
     </div>
     <button type="submit" class="btn btn-primary mb-3">Sign Up</button>
     <div>
-      <router-link to="/">Sign In</router-link>
+      <router-link to="/signin">Sign In</router-link>
     </div>
   </form>
 </template>
@@ -46,20 +46,18 @@ export default {
     signupSuccessful (response) {
       if (!response.data.csrf) {
         this.sigupFailed(response)
-        return
+      } else {
+        this.$store.commit('setCurrentUser', { currentUser: response.data })
+        this.error = ''
+        this.$router.replace('/listings')
       }
-      localStorage.csrf = response.data.csrf
-      localStorage.signedIn = true
-      this.error = ''
-      this.$router.replace('/listings')
     },
     signupFailed (error) {
       this.error = (error.response && error.response.data && error.response.data.error)
-      delete localStorage.csrf
-      delete localStorage.signedIn
+      this.$store.commit('unsetCurrentUser')
     },
     checkSignedIn () {
-      if (localStorage.signedIn) {
+      if (this.$store.signedIn) {
         this.$router.replace('/listings')
       }
     }

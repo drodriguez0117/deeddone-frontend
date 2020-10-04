@@ -41,21 +41,19 @@ export default {
     signinSuccessful (response) {
       if (!response.data.csrf) {
         this.signinFailed(response)
-        return
+      } else {
+        this.$store.commit('setCurrentUser', { currentUser: response.data })
+        this.error = ''
+        this.$router.push({path: '/' + response.data.id})
       }
-      localStorage.csrf = response.data.csrf
-      localStorage.signedIn = true
-      this.error = ''
-      this.$router.replace('/listings')
     },
     signinFailed (error) {
-      this.error = (error.response && error.response.data && error.response.data.error)
-      delete localStorage.csrf
-      delete localStorage.signedIn
+      this.error = (error.response && error.response.data && error.response.data.error) || ''
+      this.$store.commit('unsetCurrentUser')
     },
     checkSignedIn () {
-      if (localStorage.signedIn) {
-        this.$router.replace('/listings')
+      if (this.$store.state.signedIn) {
+        this.$router.replace('/')
       }
     }
   }
