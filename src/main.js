@@ -7,8 +7,11 @@ import { store } from './store'
 import VueAxios from 'vue-axios'
 import { securedAxiosInstance, plainAxiosInstance } from './backend/axios'
 import vuetify from '@/plugins/vuetify'
+import moment from 'moment'
 
 Vue.config.productionTip = false
+Vue.prototype.moment = moment
+
 Vue.use(VueAxios, {
   secured: securedAxiosInstance,
   plain: plainAxiosInstance

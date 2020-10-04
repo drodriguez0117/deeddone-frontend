@@ -1,6 +1,6 @@
 <template>
   <div class="listings">
-    <button v-on:click="signOut" v-show="this.user_email">Sign Out</button>
+    <v-btn v-on:click="signOut" v-show="this.user_email">Sign Out</v-btn>
     <v-alert
       v-if="error"
       text
@@ -10,19 +10,36 @@
         {{ error }}
     </v-alert>
     <h3> {{ user_email }} Listings</h3>
-    <div class="listings-list">
-      <v-card
-        class="listing-card"
-        outlined
-        v-for="listing in listings"
-        :key="listing.id"
-      >
-        <v-card-title class="headline d-flex justify-space between"> {{ listing.title }} </v-card-title>
-        <v-card-subtitle> {{ listing.description }} </v-card-subtitle>
-        <v-card-text> {{ listing.listing_type }} </v-card-text>
-        <v-card-text> {{ listing.created_at }} </v-card-text>
-      </v-card>
-    </div>
+    <v-container>
+      <v-row dense>
+        <v-col
+          cols="3"
+          v-for="listing in listings"
+          :key="listing.id"
+          >
+          <v-card
+            class="d-flex"
+            :elevation="listing - 1"
+            max-width="374"
+            color="pink"
+          >
+            <v-card-title
+              class="headline"
+              v-text="listing.title">
+            </v-card-title>
+            <v-card-subtitle
+              v-text="listing.description"
+              align="left"
+              ></v-card-subtitle>
+            <v-card-text
+              class="align-content-stretch">
+                {{ listing.listing_type }} {{ moment(listing.created_at).format('MM/DD/YYYY') }}
+            </v-card-text>
+            <!-- <v-card-text> {{ listing.created_at }} </v-card-text> -->
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
     <br />
   </div>
 </template>
