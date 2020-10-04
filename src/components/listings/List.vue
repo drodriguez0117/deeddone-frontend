@@ -1,12 +1,14 @@
 <template>
   <div class="listings">
+    <button v-on:click="signOut">Sign Out</button>
     <div class="alert alert-danger" v-if="error">{{ error }}</div>
-    <h3>Listings</h3>
+    <h3> {{ user_email }} Listings</h3>
     <ul class="list-group">
       <li class="list-group-item" v-for="listing in listings" :key="listing.id" :listing="listing">
           <label>Title: {{ listing.title }}</label>
           <label>Description: {{ listing.description }}</label>
-          <label>Listing Type: {{ listing.listing_type_id }}</label>
+          <label>Listing Type: {{ listing.listing_type }}</label>
+          <label>Created: {{  listing.created_at }}</label>
       </li>
     </ul>
     <br />
@@ -19,28 +21,39 @@ export default {
   data () {
     return {
       listings: [],
-      error: ''
+      error: '',
+      user_email: ''
     }
   },
   created () {
-    if (!localStorage.signedIn) {
-      this.$router.replace('/')
-    } else {
-      this.$http.secured.get('/api/v1/listings')
-        .then(response => { this.listings = response.data })
-        .catch(error => this.setError(error, 'Something is wrong'))
-    }
+    this.getListings()
   },
   methods: {
     setError (error, text) {
       this.error = (error.response && error.response.data && error.response.data.error)
     },
+    getListings () {
+      if (!this.$store.getters.currentUserId) {
+        this.$http.plain.get('/api/v1/listings')
+          .then(response => {
+            this.listings = response.data
+            this.user_email = ''
+          })
+          .catch(error => this.setError(error, 'Cannot get listings'))
+      } else {
+        this.$http.secured.get('/api/v1/listings/' + this.$store.getters.currentUserId)
+          .then(response => {
+            this.listings = response.data
+            this.user_email = this.$store.getters.currentUserName
+          })
+          .catch(error => this.setError(error, 'Something is wrong'))
+      }
+    },
     signOut () {
       this.$http.secured.delete('/signin')
         .then(response => {
-          delete localStorage.csrf
-          delete localStorage.signedIn
-          this.$router.replace('/')
+          this.$store.commit('unsetCurrentUser')
+          this.$router.replace('/signin')
         })
         .catch(error => this.setError(error, 'Cannot sign out'))
     }

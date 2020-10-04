@@ -44,7 +44,7 @@ securedAxiosInstance.interceptors.response.use(null, async error => {
     } catch (error) {
       store.commit('unsetCurrentUser')
       // redirect to signin in case refresh request fails
-      location.replace('/')
+      location.replace('/signin')
       return Promise.reject(error)
     }
   } else {

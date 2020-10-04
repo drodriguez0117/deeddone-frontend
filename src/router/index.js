@@ -10,7 +10,7 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-      path: '/',
+      path: '/signin',
       name: 'Signin',
       component: Signin
     },
@@ -20,8 +20,13 @@ export default new Router({
       component: Signup
     },
     {
-      path: '/listings',
+      path: '/',
       name: 'List',
+      component: List
+    },
+    {
+      path: '/:id',
+      name: 'listings',
       component: List
     }
   ]

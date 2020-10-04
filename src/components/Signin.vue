@@ -42,9 +42,10 @@ export default {
       if (!response.data.csrf) {
         this.signinFailed(response)
       } else {
-        this.$store.commit('setCurrentUser', { currentUser: response.data, csrf: response.data.csrf })
+        this.$store.commit('setCurrentUser', { currentUser: response.data })
         this.error = ''
-        this.$router.replace('/listings')
+        this.$router.push({path: '/' + response.data.id})
+        // this.$router.replace('/listings')
       }
     },
     signinFailed (error) {
@@ -53,7 +54,7 @@ export default {
     },
     checkSignedIn () {
       if (this.$store.state.signedIn) {
-        this.$router.replace('/listings')
+        this.$router.replace('/listings/')
       }
     }
   }

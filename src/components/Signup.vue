@@ -46,14 +46,11 @@ export default {
     signupSuccessful (response) {
       if (!response.data.csrf) {
         this.sigupFailed(response)
-        return
+      } else {
+        this.$store.commit('setCurrentUser', { currentUser: response.data })
+        this.error = ''
+        this.$router.replace('/listings')
       }
-      this.$http.plain.get('/me')
-        .then(meResponse => {
-          this.$store.commit('setCurrentUser', { currentUser: meResponse.data, csrf: response.data.csrf })
-          this.error = ''
-          this.$router.replace('/listings')
-        })
     },
     signupFailed (error) {
       this.error = (error.response && error.response.data && error.response.data.error)

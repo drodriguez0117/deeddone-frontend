@@ -11,14 +11,17 @@ export const store = new Vuex.Store({
   },
   getters: {
     currentUserId (state) {
-      return state.currentUser && state.currentUser.Id
+      return state.currentUser.id
+    },
+    currentUserName (state) {
+      return state.currentUser.email
     }
   },
   mutations: {
-    setCurrentUser (state, { currentUser, csrf }) {
+    setCurrentUser (state, { currentUser }) {
       state.currentUser = currentUser
       state.signedIn = true
-      state.csrf = csrf
+      state.csrf = currentUser.csrf
     },
     unsetCurrentUser (state) {
       state.currentUser = {}
