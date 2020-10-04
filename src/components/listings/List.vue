@@ -1,16 +1,28 @@
 <template>
   <div class="listings">
     <button v-on:click="signOut" v-show="this.user_email">Sign Out</button>
-    <div class="alert alert-danger" v-if="error">{{ error }}</div>
+    <v-alert
+      v-if="error"
+      text
+      prominent
+      type="error"
+      icon="mdi-cloud-alert">
+        {{ error }}
+    </v-alert>
     <h3> {{ user_email }} Listings</h3>
-    <ul class="list-group">
-      <li class="list-group-item" v-for="listing in listings" :key="listing.id" :listing="listing">
-          <label>Title: {{ listing.title }}</label>
-          <label>Description: {{ listing.description }}</label>
-          <label>Listing Type: {{ listing.listing_type }}</label>
-          <label>Created: {{  listing.created_at }}</label>
-      </li>
-    </ul>
+    <div class="listings-list">
+      <v-card
+        class="listing-card"
+        outlined
+        v-for="listing in listings"
+        :key="listing.id"
+      >
+        <v-card-title class="headline d-flex justify-space between"> {{ listing.title }} </v-card-title>
+        <v-card-subtitle> {{ listing.description }} </v-card-subtitle>
+        <v-card-text> {{ listing.listing_type }} </v-card-text>
+        <v-card-text> {{ listing.created_at }} </v-card-text>
+      </v-card>
+    </div>
     <br />
   </div>
 </template>

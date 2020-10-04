@@ -1,19 +1,55 @@
 <template>
-  <form class="form-signin" @submit.prevent="signin">
-    <div class="alert alert-danger" v-if="error">{{ error }}</div>
-    <div class="form-group">
-      <label for="email">Email Address</label>
-      <input v-model="email" type="email" class="form-control" id="email" placeholder="email@domain.com">
+  <v-form
+    ref="form"
+    lazy-validation
+    @submit.prevent="signin">
+    <div>
+      <v-alert
+        v-if="error"
+        color="blue-grey"
+        dark
+        dense
+        icon="mdi-school"
+        prominent
+      >
+      {{ error }}
+      </v-alert>
     </div>
-    <div class="form-group">
-      <label for="password">Password</label>
-      <input v-model="password" type="password" class="form-control" id="password" placeholder="Password">
+    <div>
+      <v-alert
+        v-if="error"
+        prominent
+        type="error"
+      >
+        <v-row align="center">
+          <v-col class="grow">
+            {{ error }}
+          </v-col>
+        </v-row>
+      </v-alert>
     </div>
-    <button type="submit" class="btn btn-primary mb-3">Sign In</button>
+    <div>
+      <v-alert
+        v-if="error"
+        text
+        prominent
+        icon="mdi-cloud-alert">
+          {{ error }}
+      </v-alert>
+    </div>
+    <v-text-field
+      v-model="email"
+      label="Fill in your  email Address"
+    ></v-text-field>
+    <v-text-field
+      v-model="password"
+      label="Password"
+    ></v-text-field>
+    <v-btn type="submit">Sign In</v-btn>
     <div>
       <router-link to="/signup">Sign Up</router-link>
     </div>
-  </form>
+  </v-form>
 </template>
 
 <script>
