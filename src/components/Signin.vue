@@ -53,7 +53,7 @@ export default {
     },
     checkSignedIn () {
       if (this.$store.state.signedIn) {
-        this.$router.replace('/listings/')
+        this.$router.replace('/')
       }
     }
   }

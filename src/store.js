@@ -7,7 +7,8 @@ export const store = new Vuex.Store({
   state: {
     currentUser: {},
     csrf: null,
-    listings: []
+    listings: [],
+    signedIn: false
   },
   getters: {
     currentUserId (state) {

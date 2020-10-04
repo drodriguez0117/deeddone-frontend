@@ -53,7 +53,6 @@ export default {
       this.$http.secured.delete('/signin')
         .then(response => {
           this.$store.commit('unsetCurrentUser')
-          // this.$router.replace('/')
         })
         .catch(error => this.setError(error, 'Cannot sign out'))
     }

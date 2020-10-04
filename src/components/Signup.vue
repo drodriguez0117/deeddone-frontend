@@ -15,7 +15,7 @@
     </div>
     <button type="submit" class="btn btn-primary mb-3">Sign Up</button>
     <div>
-      <router-link to="/">Sign In</router-link>
+      <router-link to="/signin">Sign In</router-link>
     </div>
   </form>
 </template>
