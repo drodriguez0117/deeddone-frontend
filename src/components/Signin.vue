@@ -1,55 +1,72 @@
 <template>
-  <v-form
-    ref="form"
-    lazy-validation
-    @submit.prevent="signin">
-    <div>
-      <v-alert
-        v-if="error"
-        color="blue-grey"
-        dark
-        dense
-        icon="mdi-school"
-        prominent
-      >
-      {{ error }}
-      </v-alert>
-    </div>
-    <div>
-      <v-alert
-        v-if="error"
-        prominent
-        type="error"
-      >
-        <v-row align="center">
-          <v-col class="grow">
-            {{ error }}
-          </v-col>
-        </v-row>
-      </v-alert>
-    </div>
-    <div>
-      <v-alert
-        v-if="error"
-        text
-        prominent
-        icon="mdi-cloud-alert">
-          {{ error }}
-      </v-alert>
-    </div>
-    <v-text-field
-      v-model="email"
-      label="Fill in your  email Address"
-    ></v-text-field>
-    <v-text-field
-      v-model="password"
-      label="Password"
-    ></v-text-field>
-    <v-btn type="submit">Sign In</v-btn>
-    <div>
-      <router-link to="/signup">Sign Up</router-link>
-    </div>
-  </v-form>
+  <v-app>
+    <v-container>
+      <v-layout>
+        <v-flex xs8 sm3>
+          <v-card>
+            <v-card-text hover class="pt-4">
+              <div>
+                <v-form
+                  ref="form"
+                  lazy-validation
+                  @submit.prevent="signin">
+                  <div>
+                    <v-alert
+                      v-if="error"
+                      color="blue-grey"
+                      dark
+                      dense
+                      icon="mdi-school"
+                      prominent
+                    >
+                    {{ error }}
+                    </v-alert>
+                  </div>
+                  <div>
+                    <v-alert
+                      v-if="error"
+                      prominent
+                      type="error"
+                    >
+                      <v-row align="center">
+                        <v-col class="grow">
+                          {{ error }}
+                        </v-col>
+                      </v-row>
+                    </v-alert>
+                  </div>
+                  <div>
+                    <v-alert
+                      v-if="error"
+                      text
+                      prominent
+                      icon="mdi-cloud-alert">
+                        {{ error }}
+                    </v-alert>
+                  </div>
+                  <v-text-field
+                    v-model="email"
+                    label="Enter your email address"
+                    required
+                  ></v-text-field>
+                  <v-text-field
+                    v-model="password"
+                    label="Enter your password"
+                    min="8"
+                    required
+                  ></v-text-field>
+                  <v-btn type="submit" color="primary">Sign In</v-btn>
+                </v-form>
+              </div>
+            </v-card-text>
+          </v-card>
+          <div>
+            <router-link to="/signup">Need to sign up</router-link>
+          </div>
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-app>
 </template>
 
 <script>
