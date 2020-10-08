@@ -6,8 +6,12 @@ import router from './router'
 import { store } from './store'
 import VueAxios from 'vue-axios'
 import { securedAxiosInstance, plainAxiosInstance } from './backend/axios'
+import vuetify from '@/plugins/vuetify'
+import moment from 'moment'
 
 Vue.config.productionTip = false
+Vue.prototype.moment = moment
+
 Vue.use(VueAxios, {
   secured: securedAxiosInstance,
   plain: plainAxiosInstance
@@ -16,6 +20,7 @@ Vue.use(VueAxios, {
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  vuetify,
   router,
   store,
   securedAxiosInstance,

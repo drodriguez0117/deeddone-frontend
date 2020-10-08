@@ -1,16 +1,57 @@
 <template>
   <div class="listings">
-    <button v-on:click="signOut" v-show="this.user_email">Sign Out</button>
-    <div class="alert alert-danger" v-if="error">{{ error }}</div>
+    <v-btn v-on:click="signOut" v-show="this.user_email">Sign Out</v-btn>
+    <v-alert
+      v-if="error"
+      text
+      prominent
+      type="error"
+      icon="mdi-cloud-alert"
+    >
+        {{ error }}
+    </v-alert>
     <h3> {{ user_email }} Listings</h3>
-    <ul class="list-group">
-      <li class="list-group-item" v-for="listing in listings" :key="listing.id" :listing="listing">
-          <label>Title: {{ listing.title }}</label>
-          <label>Description: {{ listing.description }}</label>
-          <label>Listing Type: {{ listing.listing_type }}</label>
-          <label>Created: {{  listing.created_at }}</label>
-      </li>
-    </ul>
+    <v-container>
+      <v-row dense>
+        <v-col
+          cols="3"
+          v-for="listing in listings"
+          :key="listing.id"
+          >
+          <v-card
+            class="d-flex"
+            :elevation="listing - 1"
+            max-width="374"
+            color="pink"
+          >
+            <v-card-title
+              class="headline"
+              v-text="listing.title"
+            >
+            </v-card-title>
+            <v-img
+              v-if="listing.images.length > 0"
+              v-bind:src="'http://localhost:3000/' + listing.images[0].image"
+              class="white--text align-end"
+              height="200px"
+              aspect-ratio="1"
+            >
+            </v-img>
+            <v-card-subtitle
+              v-text="listing.description"
+              align="left"
+            >
+            </v-card-subtitle>
+            <v-card-text
+              class="align-content-stretch"
+            >
+                {{ listing.listing_type }} {{ moment(listing.created_at).format('MM/DD/YYYY') }}
+            </v-card-text>
+            <!-- <v-card-text> {{ listing.created_at }} </v-card-text> -->
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
     <br />
   </div>
 </template>
