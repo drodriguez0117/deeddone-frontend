@@ -6,7 +6,8 @@
       text
       prominent
       type="error"
-      icon="mdi-cloud-alert">
+      icon="mdi-cloud-alert"
+    >
         {{ error }}
     </v-alert>
     <h3> {{ user_email }} Listings</h3>
@@ -25,14 +26,25 @@
           >
             <v-card-title
               class="headline"
-              v-text="listing.title">
+              v-text="listing.title"
+            >
             </v-card-title>
+            <v-img
+              v-if="listing.images.length > 0"
+              v-bind:src="'http://localhost:3000/' + listing.images[0].image"
+              class="white--text align-end"
+              height="200px"
+              aspect-ratio="1"
+            >
+            </v-img>
             <v-card-subtitle
               v-text="listing.description"
               align="left"
-              ></v-card-subtitle>
+            >
+            </v-card-subtitle>
             <v-card-text
-              class="align-content-stretch">
+              class="align-content-stretch"
+            >
                 {{ listing.listing_type }} {{ moment(listing.created_at).format('MM/DD/YYYY') }}
             </v-card-text>
             <!-- <v-card-text> {{ listing.created_at }} </v-card-text> -->
