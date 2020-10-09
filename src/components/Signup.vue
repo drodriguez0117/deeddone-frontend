@@ -1,5 +1,4 @@
 <template>
-
   <v-app>
     <v-container>
       <v-layout>
