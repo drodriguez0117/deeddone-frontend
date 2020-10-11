@@ -4,46 +4,29 @@
       <v-layout>
         <v-flex xs8 sm3>
           <v-card>
-            <v-card-text hover class="pt-4">
+            <v-card-text hover class="pt-1">
               <div>
                 <v-form
                   ref="form"
                   lazy-validation
+                  @submit="checkSignup"
                   @submit.prevent="signup">
-                  <div>
-                    <v-alert
-                      v-if="error"
-                      color="blue-grey"
-                      dark
-                      dense
-                      icon="mdi-school"
-                      prominent
-                    >
-                    {{ error }}
-                    </v-alert>
-                  </div>
-                  <div>
-                    <v-alert
-                      v-if="error"
-                      prominent
-                      type="error"
-                    >
-                      <v-row align="center">
-                        <v-col class="grow">
-                          {{ error }}
-                        </v-col>
-                      </v-row>
-                    </v-alert>
-                  </div>
-                  <div>
-                    <v-alert
-                      v-if="error"
-                      text
-                      prominent
-                      icon="mdi-cloud-alert">
+                  <v-card-title>Welcome, Sign up!</v-card-title>
+                  <v-alert
+                    v-if="errors.length"
+                    type="error"
+                    prominent
+                  >
+                    <b>Please correct the following error(s):</b>
+                    <ul>
+                      <li
+                        v-for="error in errors"
+                        :key="error"
+                      >
                         {{ error }}
-                    </v-alert>
-                  </div>
+                      </li>
+                    </ul>
+                  </v-alert>
                   <v-text-field
                     v-model="email"
                     label="Email Address"
@@ -83,7 +66,7 @@ export default {
       email: '',
       password: '',
       password_confirmation: '',
-      error: ''
+      errors: []
     }
   },
   created () {
@@ -94,27 +77,53 @@ export default {
   },
   methods: {
     signup () {
-      this.$http.plain.post('/signup', { email: this.email, password: this.password, password_confirmation: this.password_confirmation })
-        .then(response => this.signupSuccessful(response))
-        .catch(error => this.signupFailed(error))
+      if (!this.errors.length) {
+        this.$http.plain.post('/signup', { email: this.email, password: this.password, password_confirmation: this.password_confirmation })
+          .then(response => this.signupSuccessful(response))
+          .catch(error => this.signupFailed(error))
+      }
     },
     signupSuccessful (response) {
       if (!response.data.csrf) {
         this.sigupFailed(response)
       } else {
         this.$store.commit('setCurrentUser', { currentUser: response.data })
-        this.error = ''
+        this.errors = []
         this.$router.replace('/listings')
       }
     },
     signupFailed (error) {
-      this.error = (error.response && error.response.data && error.response.data.error)
+      this.errors.push(error.response && error.response.data && error.response.data.error)
       this.$store.commit('unsetCurrentUser')
     },
     checkSignedIn () {
       if (this.$store.signedIn) {
         this.$router.replace('/listings')
       }
+    },
+    checkSignup: function (e) {
+      this.errors = []
+
+      if (this.email && this.password && this.password_confirmation && this.password.length >= 8) {
+        return true
+      }
+
+      if (!this.email) {
+        this.errors.push('Email Address is required')
+      }
+
+      if (!this.password) {
+        this.errors.push('Password is required')
+      }
+
+      if (this.password.length < 8) {
+        this.errors.push('Minimum password length, keep going')
+      }
+
+      if (!this.password_confirmation) {
+        this.errors.push('Please confirm your password')
+      }
+      e.preventDefault()
     }
   }
 }

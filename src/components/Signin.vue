@@ -12,25 +12,21 @@
                   @submit="checkSignin"
                   @submit.prevent="signin">
                   <v-card-title>have a cigar...</v-card-title>
-                  <div>
-                    <v-alert
-                      v-if="errors.length"
-                      color="red"
-                      dark
-                      icon="mdi-school"
-                      prominent
-                    >
-                      <b>Please correct the following error(s):</b>
-                      <ul>
-                        <li
-                          v-for="error in errors"
-                          :key="error"
-                        >
-                          {{ error }}
-                        </li>
-                      </ul>
-                    </v-alert>
-                  </div>
+                  <v-alert
+                    v-if="errors.length"
+                    type="error"
+                    prominent
+                  >
+                    <b>Please correct the following error(s):</b>
+                    <ul>
+                      <li
+                        v-for="error in errors"
+                        :key="error"
+                      >
+                        {{ error }}
+                      </li>
+                    </ul>
+                  </v-alert>
                   <v-text-field
                     v-model="email"
                     label="email address"
@@ -90,7 +86,7 @@ export default {
       }
     },
     signinFailed (error) {
-      this.errors = (error.response && error.response.data && error.response.data.error) || ''
+      this.errors.push((error.response && error.response.data && error.response.data.error) || '')
       this.$store.commit('unsetCurrentUser')
     },
     checkSignedIn () {
