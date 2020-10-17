@@ -8,7 +8,7 @@ export const store = new Vuex.Store({
     currentUser: {},
     csrf: null,
     listings: [],
-    signedIn: false
+    loggedIn: false
   },
   getters: {
     currentUserId (state) {
@@ -21,16 +21,16 @@ export const store = new Vuex.Store({
   mutations: {
     setCurrentUser (state, { currentUser }) {
       state.currentUser = currentUser
-      state.signedIn = true
+      state.loggedIn = true
       state.csrf = currentUser.csrf
     },
     unsetCurrentUser (state) {
       state.currentUser = {}
       state.csrf = null
-      state.signedIn = false
+      state.loggedIn = false
     },
     refresh (state, csrf) {
-      state.signedIn = true
+      state.loggedIn = true
       state.csrf = csrf
     }
   },

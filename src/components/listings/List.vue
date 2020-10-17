@@ -75,14 +75,14 @@ export default {
     },
     getListings () {
       if (!this.$store.getters.currentUserId) {
-        this.$http.plain.get('/api/v1/listings')
+        this.$http.plain.get('/listings')
           .then(response => {
             this.listings = response.data
             this.user_email = ''
           })
           .catch(error => this.setError(error, 'Cannot get listings'))
       } else {
-        this.$http.secured.get('/api/v1/listings/' + this.$store.getters.currentUserId)
+        this.$http.secured.get('/listings/' + this.$store.getters.currentUserId)
           .then(response => {
             this.listings = response.data
             this.user_email = this.$store.getters.currentUserName

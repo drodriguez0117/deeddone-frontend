@@ -70,10 +70,10 @@ export default {
     }
   },
   created () {
-    this.checkSignedIn()
+    this.checkLoggedIn()
   },
   updated () {
-    this.checkSignedIn()
+    this.checkLoggedIn()
   },
   methods: {
     register () {
@@ -97,7 +97,7 @@ export default {
       this.$store.commit('unsetCurrentUser')
     },
     checkLoggedIn () {
-      if (this.$store.signedIn) {
+      if (this.$store.loggedIn) {
         this.$router.replace('/listings')
       }
     },

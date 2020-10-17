@@ -63,10 +63,10 @@ export default {
     }
   },
   created () {
-    this.checkSignedIn()
+    this.checkLoggedIn()
   },
   updated () {
-    this.checkSignedIn()
+    this.checkLoggedIn()
   },
   methods: {
     login () {
@@ -86,11 +86,13 @@ export default {
       }
     },
     loginFailed (error) {
-      this.errors.push((error.response && error.response.data && error.response.data.error) || '')
+      // fix this errors call
+      // this.errors.push((error.response && error.response.data && error.response.data.error) || '')
+      this.errors.push(error.response)
       this.$store.commit('unsetCurrentUser')
     },
-    checkSignedIn () {
-      if (this.$store.state.signedIn) {
+    checkLoggedIn () {
+      if (this.$store.state.loggedIn) {
         this.$router.replace('/')
       }
     },

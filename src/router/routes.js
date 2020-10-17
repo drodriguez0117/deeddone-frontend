@@ -20,7 +20,7 @@ export default [
   },
   {
     path: '/:id',
-    name: 'user_listings',
+    name: 'admin_listings',
     component: List
   }
 ]
