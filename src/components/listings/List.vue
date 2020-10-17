@@ -1,6 +1,6 @@
 <template>
   <div class="listings">
-    <v-btn v-on:click="signOut" v-show="this.user_email">Sign Out</v-btn>
+    <v-btn v-on:click="logout" v-show="this.user_email">Log Out</v-btn>
     <v-alert
       v-if="error"
       text
@@ -90,7 +90,7 @@ export default {
           .catch(error => this.setError(error, 'Something is wrong'))
       }
     },
-    signOut () {
+    logout () {
       this.$http.secured.delete('/login')
         .then(response => {
           this.$store.commit('unsetCurrentUser')
