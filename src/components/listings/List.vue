@@ -91,11 +91,11 @@ export default {
       }
     },
     signOut () {
-      this.$http.secured.delete('/signin')
+      this.$http.secured.delete('/login')
         .then(response => {
           this.$store.commit('unsetCurrentUser')
         })
-        .catch(error => this.setError(error, 'Cannot sign out'))
+        .catch(error => this.setError(error, 'Cannot log out'))
     }
   }
 }

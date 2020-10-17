@@ -9,9 +9,9 @@
                 <v-form
                   ref="form"
                   lazy-validation
-                  @submit="checkSignin"
-                  @submit.prevent="signin">
-                  <v-card-title>have a cigar...</v-card-title>
+                  @submit="checkRegister"
+                  @submit.prevent="register">
+                  <v-card-title>Welcome, Sign up!</v-card-title>
                   <v-alert
                     v-if="errors.length"
                     type="error"
@@ -29,22 +29,28 @@
                   </v-alert>
                   <v-text-field
                     v-model="email"
-                    label="email address"
+                    label="Email Address"
                     required
                   ></v-text-field>
                   <v-text-field
                     v-model="password"
-                    label="password"
+                    label="Password"
                     min="8"
                     required
                   ></v-text-field>
-                  <v-btn type="submit" color="primary">Sign In</v-btn>
+                  <v-text-field
+                    v-model="password_confirmation"
+                    label="Password Confirmation"
+                    min="8"
+                    required
+                  ></v-text-field>
+                  <v-btn type="submit" color="primary">Sign Up</v-btn>
                 </v-form>
               </div>
             </v-card-text>
           </v-card>
           <div>
-            <router-link to="/signup">Need to sign up</router-link>
+            <router-link to="/login">Need to log in</router-link>
           </div>
         </v-flex>
       </v-layout>
@@ -54,12 +60,13 @@
 
 <script>
 export default {
-  name: 'Signin',
+  name: 'Register',
   data () {
     return {
       email: '',
       password: '',
-      errors: ''
+      password_confirmation: '',
+      errors: []
     }
   },
   created () {
@@ -69,46 +76,53 @@ export default {
     this.checkSignedIn()
   },
   methods: {
-    signin () {
+    register () {
       if (!this.errors.length) {
-        this.$http.plain.post('/signin', { email: this.email, password: this.password })
-          .then(response => this.signinSuccessful(response))
-          .catch(errors => this.signinFailed(errors))
+        this.$http.plain.post('/register', { email: this.email, password: this.password, password_confirmation: this.password_confirmation })
+          .then(response => this.registerSuccessful(response))
+          .catch(error => this.registerFailed(error))
       }
     },
-    signinSuccessful (response) {
+    registerSuccessful (response) {
       if (!response.data.csrf) {
-        this.signinFailed(response)
+        this.registerFailed(response)
       } else {
         this.$store.commit('setCurrentUser', { currentUser: response.data })
         this.errors = []
-        this.$router.push({path: '/' + response.data.id})
+        this.$router.replace('/listings')
       }
     },
-    signinFailed (error) {
-      this.errors.push((error.response && error.response.data && error.response.data.error) || '')
+    registerFailed (error) {
+      this.errors.push(error.response && error.response.data && error.response.data.error)
       this.$store.commit('unsetCurrentUser')
     },
-    checkSignedIn () {
-      if (this.$store.state.signedIn) {
-        this.$router.replace('/')
+    checkLoggedIn () {
+      if (this.$store.signedIn) {
+        this.$router.replace('/listings')
       }
     },
-    checkSignin: function (e) {
-      if (this.email && this.password) {
+    checkRegister: function (e) {
+      this.errors = []
+
+      if (this.email && this.password && this.password_confirmation && this.password.length >= 8) {
         return true
       }
 
-      this.errors = []
-
       if (!this.email) {
-        this.errors.push('Email required')
+        this.errors.push('Email Address is required')
       }
 
       if (!this.password) {
-        this.errors.push('Password required')
+        this.errors.push('Password is required')
       }
 
+      if (this.password.length < 8) {
+        this.errors.push('Minimum password length, keep going')
+      }
+
+      if (!this.password_confirmation) {
+        this.errors.push('Please confirm your password')
+      }
       e.preventDefault()
     }
   }
@@ -116,10 +130,10 @@ export default {
 </script>
 
 <style lang="css">
-.form-signin {
-  width: 70%;
-  max-width: 500px;
-  padding: 10% 15px;
-  margin: 0 auto;
-}
+  .form-register {
+    width: 70%;
+    max-width: 500px;
+    padding: 10% 15px;
+    margin: 0 auto;
+  }
 </style>

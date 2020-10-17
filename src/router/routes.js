@@ -1,17 +1,17 @@
-import Signin from '@/components/Signin.vue'
-import Signup from '@/components/Signup.vue'
+import Login from '@/components/Login.vue'
+import Register from '@/components/Register.vue'
 import List from '@/components/listings/List.vue'
 
 export default [
   {
-    path: '/signin',
-    name: 'signin',
-    component: Signin
+    path: '/login',
+    name: 'login',
+    component: Login
   },
   {
-    path: '/signup',
-    name: 'signup',
-    component: Signup
+    path: '/register',
+    name: 'register',
+    component: Register
   },
   {
     path: '/',

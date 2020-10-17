@@ -9,9 +9,9 @@
                 <v-form
                   ref="form"
                   lazy-validation
-                  @submit="checkSignup"
-                  @submit.prevent="signup">
-                  <v-card-title>Welcome, Sign up!</v-card-title>
+                  @submit="checkLogin"
+                  @submit.prevent="login">
+                  <v-card-title>have a cigar...</v-card-title>
                   <v-alert
                     v-if="errors.length"
                     type="error"
@@ -29,28 +29,22 @@
                   </v-alert>
                   <v-text-field
                     v-model="email"
-                    label="Email Address"
+                    label="email address"
                     required
                   ></v-text-field>
                   <v-text-field
                     v-model="password"
-                    label="Password"
+                    label="password"
                     min="8"
                     required
                   ></v-text-field>
-                  <v-text-field
-                    v-model="password_confirmation"
-                    label="Password Confirmation"
-                    min="8"
-                    required
-                  ></v-text-field>
-                  <v-btn type="submit" color="primary">Sign Up</v-btn>
+                  <v-btn type="submit" color="primary">Log In</v-btn>
                 </v-form>
               </div>
             </v-card-text>
           </v-card>
           <div>
-            <router-link to="/signin">Need to sign in</router-link>
+            <router-link to="/register">Need to Register</router-link>
           </div>
         </v-flex>
       </v-layout>
@@ -60,13 +54,12 @@
 
 <script>
 export default {
-  name: 'Signup',
+  name: 'Login',
   data () {
     return {
       email: '',
       password: '',
-      password_confirmation: '',
-      errors: []
+      errors: ''
     }
   },
   created () {
@@ -76,53 +69,46 @@ export default {
     this.checkSignedIn()
   },
   methods: {
-    signup () {
+    login () {
       if (!this.errors.length) {
-        this.$http.plain.post('/signup', { email: this.email, password: this.password, password_confirmation: this.password_confirmation })
-          .then(response => this.signupSuccessful(response))
-          .catch(error => this.signupFailed(error))
+        this.$http.plain.post('/login', { email: this.email, password: this.password })
+          .then(response => this.loginSuccessful(response))
+          .catch(errors => this.loginFailed(errors))
       }
     },
-    signupSuccessful (response) {
+    loginSuccessful (response) {
       if (!response.data.csrf) {
-        this.sigupFailed(response)
+        this.loginFailed(response)
       } else {
         this.$store.commit('setCurrentUser', { currentUser: response.data })
         this.errors = []
-        this.$router.replace('/listings')
+        this.$router.push({path: '/' + response.data.id})
       }
     },
-    signupFailed (error) {
-      this.errors.push(error.response && error.response.data && error.response.data.error)
+    loginFailed (error) {
+      this.errors.push((error.response && error.response.data && error.response.data.error) || '')
       this.$store.commit('unsetCurrentUser')
     },
     checkSignedIn () {
-      if (this.$store.signedIn) {
-        this.$router.replace('/listings')
+      if (this.$store.state.signedIn) {
+        this.$router.replace('/')
       }
     },
-    checkSignup: function (e) {
-      this.errors = []
-
-      if (this.email && this.password && this.password_confirmation && this.password.length >= 8) {
+    checkLogin: function (e) {
+      if (this.email && this.password) {
         return true
       }
 
+      this.errors = []
+
       if (!this.email) {
-        this.errors.push('Email Address is required')
+        this.errors.push('Email required')
       }
 
       if (!this.password) {
-        this.errors.push('Password is required')
+        this.errors.push('Password required')
       }
 
-      if (this.password.length < 8) {
-        this.errors.push('Minimum password length, keep going')
-      }
-
-      if (!this.password_confirmation) {
-        this.errors.push('Please confirm your password')
-      }
       e.preventDefault()
     }
   }
@@ -130,10 +116,10 @@ export default {
 </script>
 
 <style lang="css">
-  .form-signup {
-    width: 70%;
-    max-width: 500px;
-    padding: 10% 15px;
-    margin: 0 auto;
-  }
+.form-login {
+  width: 70%;
+  max-width: 500px;
+  padding: 10% 15px;
+  margin: 0 auto;
+}
 </style>
