@@ -11,8 +11,8 @@ module.exports = function karmaConfig (config) {
     // 1. install corresponding karma launcher
     //    http://karma-runner.github.io/0.13/config/browsers.html
     // 2. add it to the `browsers` array below.
-    browsers: ['PhantomJS'],
-    frameworks: ['mocha', 'sinon-chai', 'phantomjs-shim'],
+    browsers: ['Chrome'],
+    frameworks: ['mocha', 'sinon-chai'],
     reporters: ['spec', 'coverage'],
     files: [
       '../../node_modules/babel-polyfill/dist/polyfill.js',
@@ -21,6 +21,20 @@ module.exports = function karmaConfig (config) {
     preprocessors: {
       './index.js': ['webpack', 'sourcemap']
     },
+    // added as vue-cli webpack template doesn't add it by default
+    plugins: [
+      // launchers
+      'karma-chrome-launcher',
+      // test libraries
+      'karma-mocha',
+      'karma-sinon-chai',
+      // preprocessors
+      'karma-webpack',
+      'karma-sourcemap-loader',
+      // reporters
+      'karma-spec-reporter',
+      'karma-coverage'
+    ],
     webpack: webpackConfig,
     webpackMiddleware: {
       noInfo: true
