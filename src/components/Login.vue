@@ -9,8 +9,8 @@
                 <v-form
                   ref="form"
                   lazy-validation
-                  @submit="checkSignin"
-                  @submit.prevent="signin">
+                  @submit="checkLogin"
+                  @submit.prevent="login">
                   <v-card-title>have a cigar...</v-card-title>
                   <v-alert
                     v-if="errors.length"
@@ -38,13 +38,13 @@
                     min="8"
                     required
                   ></v-text-field>
-                  <v-btn type="submit" color="primary">Sign In</v-btn>
+                  <v-btn type="submit" color="primary">Log In</v-btn>
                 </v-form>
               </div>
             </v-card-text>
           </v-card>
           <div>
-            <router-link to="/signup">Need to sign up</router-link>
+            <router-link to="/register">Need to Register</router-link>
           </div>
         </v-flex>
       </v-layout>
@@ -54,7 +54,7 @@
 
 <script>
 export default {
-  name: 'Signin',
+  name: 'Login',
   data () {
     return {
       email: '',
@@ -63,38 +63,40 @@ export default {
     }
   },
   created () {
-    this.checkSignedIn()
+    this.checkLoggedIn()
   },
   updated () {
-    this.checkSignedIn()
+    this.checkLoggedIn()
   },
   methods: {
-    signin () {
+    login () {
       if (!this.errors.length) {
-        this.$http.plain.post('/signin', { email: this.email, password: this.password })
-          .then(response => this.signinSuccessful(response))
-          .catch(errors => this.signinFailed(errors))
+        this.$http.plain.post('/login', { email: this.email, password: this.password })
+          .then(response => this.loginSuccessful(response))
+          .catch(errors => this.loginFailed(errors))
       }
     },
-    signinSuccessful (response) {
+    loginSuccessful (response) {
       if (!response.data.csrf) {
-        this.signinFailed(response)
+        this.loginFailed(response)
       } else {
         this.$store.commit('setCurrentUser', { currentUser: response.data })
         this.errors = []
         this.$router.push({path: '/' + response.data.id})
       }
     },
-    signinFailed (error) {
-      this.errors.push((error.response && error.response.data && error.response.data.error) || '')
+    loginFailed (error) {
+      // fix this errors call
+      // this.errors.push((error.response && error.response.data && error.response.data.error) || '')
+      this.errors.push(error.response)
       this.$store.commit('unsetCurrentUser')
     },
-    checkSignedIn () {
-      if (this.$store.state.signedIn) {
+    checkLoggedIn () {
+      if (this.$store.state.loggedIn) {
         this.$router.replace('/')
       }
     },
-    checkSignin: function (e) {
+    checkLogin: function (e) {
       if (this.email && this.password) {
         return true
       }
@@ -116,7 +118,7 @@ export default {
 </script>
 
 <style lang="css">
-.form-signin {
+.form-login {
   width: 70%;
   max-width: 500px;
   padding: 10% 15px;

@@ -35,7 +35,7 @@ securedAxiosInstance.interceptors.response.use(null, async error => {
     // In case 401 is caused by expired access cookie - we'll do refresh request
     try {
       const response = await plainAxiosInstance.post('/refresh', {}, { headers: { 'X-CSRF-TOKEN': store.state.csrf } })
-      plainAxiosInstance.get('/signin')
+      plainAxiosInstance.get('/login')
         .then(meResponse => store.commit('setCurrentUser', { currentUser: meResponse.data, csrf: response.data.csrf }))
       // and after successful refresh - repeat the original request
       let retryConfig = error.response.config
@@ -43,8 +43,8 @@ securedAxiosInstance.interceptors.response.use(null, async error => {
       return plainAxiosInstance.request(retryConfig)
     } catch (error) {
       store.commit('unsetCurrentUser')
-      // redirect to signin in case refresh request fails
-      location.replace('/signin')
+      // redirect to login in case refresh request fails
+      location.replace('/login')
       return Promise.reject(error)
     }
   } else {

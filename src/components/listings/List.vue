@@ -1,6 +1,6 @@
 <template>
   <div class="listings">
-    <v-btn v-on:click="signOut" v-show="this.user_email">Sign Out</v-btn>
+    <v-btn v-on:click="logout" v-show="this.user_email">Log Out</v-btn>
     <v-alert
       v-if="error"
       text
@@ -75,14 +75,14 @@ export default {
     },
     getListings () {
       if (!this.$store.getters.currentUserId) {
-        this.$http.plain.get('/api/v1/listings')
+        this.$http.plain.get('/listings')
           .then(response => {
             this.listings = response.data
             this.user_email = ''
           })
           .catch(error => this.setError(error, 'Cannot get listings'))
       } else {
-        this.$http.secured.get('/api/v1/listings/' + this.$store.getters.currentUserId)
+        this.$http.secured.get('/listings/' + this.$store.getters.currentUserId)
           .then(response => {
             this.listings = response.data
             this.user_email = this.$store.getters.currentUserName
@@ -90,12 +90,12 @@ export default {
           .catch(error => this.setError(error, 'Something is wrong'))
       }
     },
-    signOut () {
-      this.$http.secured.delete('/signin')
+    logout () {
+      this.$http.secured.delete('/login')
         .then(response => {
           this.$store.commit('unsetCurrentUser')
         })
-        .catch(error => this.setError(error, 'Cannot sign out'))
+        .catch(error => this.setError(error, 'Cannot log out'))
     }
   }
 }

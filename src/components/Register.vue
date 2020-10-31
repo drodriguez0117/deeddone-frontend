@@ -9,8 +9,8 @@
                 <v-form
                   ref="form"
                   lazy-validation
-                  @submit="checkSignup"
-                  @submit.prevent="signup">
+                  @submit="checkRegister"
+                  @submit.prevent="register">
                   <v-card-title>Welcome, Sign up!</v-card-title>
                   <v-alert
                     v-if="errors.length"
@@ -50,7 +50,7 @@
             </v-card-text>
           </v-card>
           <div>
-            <router-link to="/signin">Need to sign in</router-link>
+            <router-link to="/login">Need to log in</router-link>
           </div>
         </v-flex>
       </v-layout>
@@ -60,7 +60,7 @@
 
 <script>
 export default {
-  name: 'Signup',
+  name: 'Register',
   data () {
     return {
       email: '',
@@ -70,38 +70,38 @@ export default {
     }
   },
   created () {
-    this.checkSignedIn()
+    this.checkLoggedIn()
   },
   updated () {
-    this.checkSignedIn()
+    this.checkLoggedIn()
   },
   methods: {
-    signup () {
+    register () {
       if (!this.errors.length) {
-        this.$http.plain.post('/signup', { email: this.email, password: this.password, password_confirmation: this.password_confirmation })
-          .then(response => this.signupSuccessful(response))
-          .catch(error => this.signupFailed(error))
+        this.$http.plain.post('/register', { email: this.email, password: this.password, password_confirmation: this.password_confirmation })
+          .then(response => this.registerSuccessful(response))
+          .catch(error => this.registerFailed(error))
       }
     },
-    signupSuccessful (response) {
+    registerSuccessful (response) {
       if (!response.data.csrf) {
-        this.sigupFailed(response)
+        this.registerFailed(response)
       } else {
         this.$store.commit('setCurrentUser', { currentUser: response.data })
         this.errors = []
         this.$router.replace('/listings')
       }
     },
-    signupFailed (error) {
+    registerFailed (error) {
       this.errors.push(error.response && error.response.data && error.response.data.error)
       this.$store.commit('unsetCurrentUser')
     },
-    checkSignedIn () {
-      if (this.$store.signedIn) {
+    checkLoggedIn () {
+      if (this.$store.loggedIn) {
         this.$router.replace('/listings')
       }
     },
-    checkSignup: function (e) {
+    checkRegister: function (e) {
       this.errors = []
 
       if (this.email && this.password && this.password_confirmation && this.password.length >= 8) {
@@ -130,7 +130,7 @@ export default {
 </script>
 
 <style lang="css">
-  .form-signup {
+  .form-register {
     width: 70%;
     max-width: 500px;
     padding: 10% 15px;
