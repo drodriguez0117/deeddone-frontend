@@ -31,7 +31,7 @@
             </v-card-title>
             <v-img
               v-if="listing.images.length > 0"
-              v-bind:src="'http://localhost:3000/' + listing.images[0].image"
+              v-bind:src="'http://localhost:3000' + listing.images[0].image"
               class="white--text align-end"
               height="200px"
               aspect-ratio="1"

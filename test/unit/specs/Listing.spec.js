@@ -1,4 +1,4 @@
-import { mount, shallowMount, createLocalVue } from '@vue/test-utils'
+import { shallowMount, createLocalVue } from '@vue/test-utils'
 import Vue from 'vue'
 import Listing from '@/components/listings/List.vue'
 import { expect } from 'chai'
