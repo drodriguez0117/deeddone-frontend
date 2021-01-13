@@ -62,7 +62,7 @@
 
 <script>
 export default {
-  name: 'List',
+  name: 'Listings',
   data () {
     return {
       listings: [],

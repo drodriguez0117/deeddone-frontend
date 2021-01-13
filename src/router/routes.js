@@ -1,6 +1,6 @@
 import Login from '@/components/Login.vue'
 import Register from '@/components/Register.vue'
-import List from '@/components/listings/List.vue'
+import Listings from '@/components/listings/Listings.vue'
 
 export default [
   {
@@ -16,11 +16,11 @@ export default [
   {
     path: '/',
     name: 'list',
-    component: List
+    component: Listings
   },
   {
     path: '/:id',
     name: 'admin_listings',
-    component: List
+    component: Listings
   }
 ]

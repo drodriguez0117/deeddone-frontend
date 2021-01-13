@@ -1,13 +1,13 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils'
 import Vue from 'vue'
-import Listing from '@/components/listings/List.vue'
+import Listing from '@/components/listings/Listings.vue'
 import { expect } from 'chai'
 import Vuex from 'vuex'
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
 
-describe('List', () => {
+describe('Listings', () => {
   it('should show Listings text', () => {
     const Constructor = Vue.extend(Listing)
     const ListComponent = new Constructor().$mount()
