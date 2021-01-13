@@ -117,7 +117,7 @@ export default {
       }
 
       if (this.password.length < 8) {
-        this.errors.push('Minimum password length, keep going')
+        this.errors.push('Minimum password length requirement')
       }
 
       if (!this.password_confirmation) {

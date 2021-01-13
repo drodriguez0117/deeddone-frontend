@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
+
 Vue.use(Vuex)
 
 export const store = new Vuex.Store({
@@ -26,8 +27,8 @@ export const store = new Vuex.Store({
     },
     unsetCurrentUser (state) {
       state.currentUser = {}
-      state.csrf = null
       state.loggedIn = false
+      state.csrf = null
     },
     refresh (state, csrf) {
       state.loggedIn = true

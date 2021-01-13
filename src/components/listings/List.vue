@@ -22,32 +22,36 @@
             class="d-flex"
             :elevation="listing - 1"
             max-width="374"
-            color="pink"
           >
-            <v-card-title
-              class="headline"
-              v-text="listing.title"
-            >
-            </v-card-title>
             <v-img
               v-if="listing.images.length > 0"
               v-bind:src="'http://localhost:3000' + listing.images[0].image"
-              class="white--text align-end"
               height="200px"
               aspect-ratio="1"
             >
+              <v-app-bar
+                flat
+                color="rgba(0, 0, 0, 0)"
+              >
+                <v-toolbar-title class="white-text">
+                  <span class="white-text">{{ listing.listing_type }}</span>
+                </v-toolbar-title>
+                <v-spacer></v-spacer>
+              </v-app-bar>
             </v-img>
             <v-card-subtitle
-              v-text="listing.description"
+              v-text="listing.title"
               align="left"
             >
             </v-card-subtitle>
             <v-card-text
-              class="align-content-stretch"
+              v-text="listing.description"
+              align="left"
             >
-                {{ listing.listing_type }} {{ moment(listing.created_at).format('MM/DD/YYYY') }}
             </v-card-text>
-            <!-- <v-card-text> {{ listing.created_at }} </v-card-text> -->
+            <v-card-text>
+                {{ listing.category.name }} {{ moment(listing.created_at).format('MM/DD/YYYY') }}
+            </v-card-text>
           </v-card>
         </v-col>
       </v-row>
