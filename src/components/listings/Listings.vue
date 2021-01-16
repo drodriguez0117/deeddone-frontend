@@ -28,6 +28,7 @@
               v-bind:src="'http://localhost:3000' + listing.images[0].image"
               height="200px"
               aspect-ratio="1"
+              @click="clickMe"
             >
               <v-app-bar
                 flat
@@ -74,6 +75,9 @@ export default {
     this.getListings()
   },
   methods: {
+    clickMe () {
+      this.user_email = 'You clicked me'
+    },
     setError (error, text) {
       this.error = (error.response && error.response.data && error.response.data.error)
     },
