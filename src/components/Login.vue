@@ -92,7 +92,7 @@ export default {
       this.$store.commit('unsetCurrentUser')
     },
     checkLoggedIn () {
-      if (this.$store.state.loggedIn) {
+      if (this.$store.state.users.loggedIn) {
         this.$router.replace('/')
       }
     },
