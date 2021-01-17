@@ -16,7 +16,7 @@
       <v-row dense>
         <v-col
           cols="3"
-          v-for="listing in listings"
+          v-for="listing in visibleListings"
           v-bind:key="listing.id"
           >
           <v-card
@@ -84,22 +84,24 @@ export default {
     },
     getListings () {
       if (!this.$store.getters.currentUserId) {
-        this.$http.plain.get('/listings')
+        this.$store.dispatch('fetchListings')
+      /*         this.$http.plain.get('/listings')
           .then(response => {
             this.listings = response.data
             this.user_email = ''
           })
-          .catch(error => this.setError(error, 'Cannot get listings'))
+          .catch(error => this.setError(error, 'Cannot get listings')) */
       }
     },
     getUserListings () {
       if (this.$store.getters.currentUserId) {
-        this.$http.secured.get('/listings/' + this.$store.getters.currentUserId)
+        this.$store.dispatch('fetchListingsByUser', this.$store.getters.currentUserId)
+      /*         this.$http.secured.get('/listings/' + this.$store.getters.currentUserId)
           .then(response => {
             this.listings = response.data
             this.user_email = this.$store.getters.currentUserName
           })
-          .catch(error => this.setError(error, 'Something is wrong'))
+          .catch(error => this.setError(error, 'Something is wrong')) */
       }
     },
     logout () {

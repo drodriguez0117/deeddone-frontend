@@ -1,4 +1,7 @@
 import filter from '../../components/listings/filter-listings'
+// import axios from '../../backend/axios/index'
+// import axios from 'axios'
+import { plainAxiosInstance, securedAxiosInstance } from '../../backend/axios/index'
 
 export default {
   state: {
@@ -21,16 +24,19 @@ export default {
     }
   },
   actions: {
-    fetchListings ({ commit }) {
-      this.$http.plain.get('/listings')
+    async fetchListings ({ commit }) {
+      await plainAxiosInstance.get('/listings')
+        .then((response) => commit('setListings', response.data))
+    },
+    /*       this.$http.plain.get('/listings')
         .then((response) => {
           commit('setListings', response.data)
           this.$store.dispatch('unsetCurrentUser')
         })
         .catch(error => this.setError(error, 'Cannot get listings'))
-    },
-    fetchListingsByUser ({commit}, id) {
-      this.$http.secured.get('/listings/' + id)
+    }, */
+    async fetchListingsByUser ({commit}, id) {
+      await securedAxiosInstance.get('/listings/' + id)
         .then(response => {
           commit('setListings', response.data)
           this.state.listings = response.data
