@@ -1,6 +1,4 @@
 import filter from '../../components/listings/filter-listings'
-// import axios from '../../backend/axios/index'
-// import axios from 'axios'
 import { plainAxiosInstance, securedAxiosInstance } from '../../backend/axios/index'
 
 export default {
@@ -9,7 +7,6 @@ export default {
   },
   getters: {
     getUserListings (state, id) {
-      // return state.listings
       return filter.getUserListings(state.listings, id)
     },
     getListings (state, isActive) {
@@ -42,7 +39,7 @@ export default {
           this.state.listings = response.data
           this.user_email = this.$store.getters.currentUserName
         })
-        .catch(error => this.setError(error, 'Something is wrong'))
+        .catch((error) => error)
     }
   }
 }

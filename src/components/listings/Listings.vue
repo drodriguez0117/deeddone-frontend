@@ -85,23 +85,14 @@ export default {
     getListings () {
       if (!this.$store.getters.currentUserId) {
         this.$store.dispatch('fetchListings')
-      /*         this.$http.plain.get('/listings')
-          .then(response => {
-            this.listings = response.data
-            this.user_email = ''
-          })
-          .catch(error => this.setError(error, 'Cannot get listings')) */
       }
     },
     getUserListings () {
       if (this.$store.getters.currentUserId) {
-        this.$store.dispatch('fetchListingsByUser', this.$store.getters.currentUserId)
-      /*         this.$http.secured.get('/listings/' + this.$store.getters.currentUserId)
-          .then(response => {
-            this.listings = response.data
-            this.user_email = this.$store.getters.currentUserName
-          })
-          .catch(error => this.setError(error, 'Something is wrong')) */
+        var errors = this.$store.dispatch('fetchListingsByUser', this.$store.getters.currentUserId)
+        if (errors) {
+          this.setError(errors, 'Issue retrieving listings for user')
+        }
       }
     },
     logout () {
