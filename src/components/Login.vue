@@ -10,7 +10,7 @@
                   ref="form"
                   lazy-validation
                   @submit="checkLogin"
-                  @submit.prevent="login">
+                  @submit.prevent="loginUser">
                   <v-card-title>have a cigar...</v-card-title>
                   <v-alert
                     v-if="errors.length"
@@ -69,27 +69,16 @@ export default {
     this.checkLoggedIn()
   },
   methods: {
-    login () {
+    loginUser () {
       if (!this.errors.length) {
-        this.$http.plain.post('/login', { email: this.email, password: this.password })
-          .then(response => this.loginSuccessful(response))
-          .catch(errors => this.loginFailed(errors))
+        const userCredentials = {
+          email: this.email,
+          password: this.password
+        }
+        this.$store.dispatch('signIn', userCredentials)
+          .then(() => this.$router.push('/'))
+          .catch((errors) => { this.errors.push(errors) })
       }
-    },
-    loginSuccessful (response) {
-      if (!response.data.csrf) {
-        this.loginFailed(response)
-      } else {
-        this.$store.commit('setCurrentUser', { currentUser: response.data })
-        this.errors = []
-        this.$router.push({path: '/' + response.data.id})
-      }
-    },
-    loginFailed (error) {
-      // fix this errors call
-      // this.errors.push((error.response && error.response.data && error.response.data.error) || '')
-      this.errors.push(error.response)
-      this.$store.commit('unsetCurrentUser')
     },
     checkLoggedIn () {
       if (this.$store.state.users.loggedIn) {

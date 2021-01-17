@@ -1,6 +1,6 @@
 <template>
   <div class="listings">
-    <v-btn v-on:click="logout" v-show="this.user_email">Log Out</v-btn>
+    <v-btn v-on:click="logout" v-show="this.$store.getters.currentUserName">Log Out</v-btn>
     <v-alert
       v-if="error"
       text
@@ -10,7 +10,7 @@
     >
         {{ error }}
     </v-alert>
-    <h3> {{ user_email }} Listings</h3>
+    <h3> {{ this.$store.getters.currentUserName }} Listings</h3>
     <v-btn v-on:click="getUserListings">Only My Listings</v-btn>
     <v-container>
       <v-row dense>
@@ -70,14 +70,12 @@ export default {
   },
   data () {
     return {
-      listings: [],
-      error: '',
-      user_email: ''
+      error: ''
     }
   },
   methods: {
     clickMe () {
-      this.user_email = 'You clicked me'
+      console.log('here you go...')
     },
     setError (error, text) {
       this.error = (error.response && error.response.data && error.response.data.error)
@@ -89,9 +87,9 @@ export default {
     },
     getUserListings () {
       if (this.$store.getters.currentUserId) {
-        var errors = this.$store.dispatch('fetchListingsByUser', this.$store.getters.currentUserId)
-        if (errors) {
-          this.setError(errors, 'Issue retrieving listings for user')
+        this.error = this.$store.dispatch('fetchListingsByUser', this.$store.getters.currentUserId)
+        if (this.error) {
+          this.setError(this.error, 'Issue retrieving listings for user')
         }
       }
     },
