@@ -11,12 +11,13 @@
         {{ error }}
     </v-alert>
     <h3> {{ user_email }} Listings</h3>
+    <v-btn v-on:click="getUserListings">Only My Listings</v-btn>
     <v-container>
       <v-row dense>
         <v-col
           cols="3"
           v-for="listing in listings"
-          :key="listing.id"
+          v-bind:key="listing.id"
           >
           <v-card
             class="d-flex"
@@ -64,15 +65,15 @@
 <script>
 export default {
   name: 'Listings',
+  created () {
+    this.getListings()
+  },
   data () {
     return {
       listings: [],
       error: '',
       user_email: ''
     }
-  },
-  created () {
-    this.getListings()
   },
   methods: {
     clickMe () {
@@ -89,7 +90,10 @@ export default {
             this.user_email = ''
           })
           .catch(error => this.setError(error, 'Cannot get listings'))
-      } else {
+      }
+    },
+    getUserListings () {
+      if (this.$store.getters.currentUserId) {
         this.$http.secured.get('/listings/' + this.$store.getters.currentUserId)
           .then(response => {
             this.listings = response.data
@@ -104,6 +108,11 @@ export default {
           this.$store.commit('unsetCurrentUser')
         })
         .catch(error => this.setError(error, 'Cannot log out'))
+    }
+  },
+  computed: {
+    visibleListings () {
+      return this.$store.getters.getListings(true)
     }
   }
 }
