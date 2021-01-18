@@ -9,7 +9,7 @@
                 <v-form
                   ref="form"
                   lazy-validation
-                  @submit="checkLogin"
+                  @submit="validateLogin"
                   @submit.prevent="loginUser">
                   <v-card-title>have a cigar...</v-card-title>
                   <v-alert
@@ -59,14 +59,14 @@ export default {
     return {
       email: '',
       password: '',
-      errors: ''
+      errors: []
     }
   },
   created () {
-    this.checkLoggedIn()
+    this.isUserLoggedIn()
   },
   updated () {
-    this.checkLoggedIn()
+    this.isUserLoggedIn()
   },
   methods: {
     loginUser () {
@@ -77,15 +77,15 @@ export default {
         }
         this.$store.dispatch('signIn', userCredentials)
           .then(() => this.$router.push('/'))
-          .catch((errors) => { this.errors.push(errors) })
+          .catch((error) => { this.errors.push(error.message) })
       }
     },
-    checkLoggedIn () {
+    isUserLoggedIn () {
       if (this.$store.state.users.loggedIn) {
         this.$router.replace('/')
       }
     },
-    checkLogin: function (e) {
+    validateLogin: function (e) {
       if (this.email && this.password) {
         return true
       }

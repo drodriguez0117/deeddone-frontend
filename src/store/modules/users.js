@@ -5,7 +5,8 @@ export default {
   state: {
     currentUser: {},
     csrf: null,
-    loggedIn: false
+    loggedIn: false,
+    errors: []
   },
   getters: {
     currentUserId (state) {
@@ -21,10 +22,11 @@ export default {
       state.loggedIn = true
       state.csrf = currentUser.csrf
     },
-    unsetCurrentUser (state) {
+    unsetCurrentUser (state, errorMessage) {
       state.currentUser = {}
       state.loggedIn = false
       state.csrf = null
+      state.errors.push(errorMessage)
     },
     refresh (state, csrf) {
       state.loggedIn = true
@@ -33,9 +35,14 @@ export default {
   },
   actions: {
     signIn (commit, user) {
-      plainAxiosInstance.post('/login', {email: user.email, password: user.password})
-        .then((response) => this.commit('setCurrentUser', response.data))
-        .catch(() => this.commit('unsetCurrentUser'))
+      return new Promise((resolve, reject) => {
+        plainAxiosInstance.post('/login', {email: user.email, password: user.password})
+          .then((response) => this.commit('setCurrentUser', response.data))
+          .catch((error) => {
+            this.commit('unsetCurrentUser', error.message)
+            reject(error)
+          })
+      })
     }
   },
   plugins: [createPersistedState]
