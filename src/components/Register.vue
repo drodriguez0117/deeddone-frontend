@@ -9,7 +9,7 @@
                 <v-form
                   ref="form"
                   lazy-validation
-                  @submit="checkRegister"
+                  @submit="validateRegistration"
                   @submit.prevent="register">
                   <v-card-title>Welcome, Sign up!</v-card-title>
                   <v-alert
@@ -70,43 +70,31 @@ export default {
     }
   },
   created () {
-    this.checkLoggedIn()
+    this.isUserLoggedIn()
   },
   updated () {
-    this.checkLoggedIn()
+    this.isUserLoggedIn()
   },
   methods: {
     register () {
       if (!this.errors.length) {
-        this.$http.plain.post('/register', { email: this.email, password: this.password, password_confirmation: this.password_confirmation })
-          .then(response => this.registerSuccessful(response))
-          .catch(error => this.registerFailed(error))
+        const newUser = {
+          email: this.email,
+          password: this.password,
+          password_confirmation: this.password_confirmation
+        }
+        this.$store.dispatch('register', newUser)
+          .then(() => this.$router.push('/listings'))
+          .catch((error) => { this.errors.push(error) })
       }
     },
-    registerSuccessful (response) {
-      if (!response.data.csrf) {
-        this.registerFailed(response)
-      } else {
-        this.$store.commit('setCurrentUser', { currentUser: response.data })
-        this.errors = []
-        this.$router.replace('/listings')
+    isUserLoggedIn () {
+      if (this.$store.state.users.loggedIn) {
+        this.$router.push('/listings')
       }
     },
-    registerFailed (error) {
-      this.errors.push(error.response && error.response.data && error.response.data.error)
-      this.$store.commit('unsetCurrentUser')
-    },
-    checkLoggedIn () {
-      if (this.$store.loggedIn) {
-        this.$router.replace('/listings')
-      }
-    },
-    checkRegister: function (e) {
+    validateRegistration: function (e) {
       this.errors = []
-
-      if (this.email && this.password && this.password_confirmation && this.password.length >= 8) {
-        return true
-      }
 
       if (!this.email) {
         this.errors.push('Email Address is required')
@@ -122,6 +110,14 @@ export default {
 
       if (!this.password_confirmation) {
         this.errors.push('Please confirm your password')
+      }
+
+      if (this.password !== this.password_confirmation) {
+        this.errors.push('Password Confirmation does not match password')
+      }
+
+      if (this.email && this.password && this.password_confirmation && this.password.length >= 8) {
+        return true
       }
       e.preventDefault()
     }

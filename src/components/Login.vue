@@ -82,7 +82,7 @@ export default {
     },
     isUserLoggedIn () {
       if (this.$store.state.users.loggedIn) {
-        this.$router.replace('/')
+        this.$router.push('/')
       }
     },
     validateLogin: function (e) {
