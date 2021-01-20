@@ -30,7 +30,10 @@ export default {
     signIn (commit, user) {
       return new Promise((resolve, reject) => {
         plainAxiosInstance.post('/login', {email: user.email, password: user.password})
-          .then((response) => this.commit('setCurrentUser', response.data))
+          .then((response) => {
+            this.commit('setCurrentUser', response.data)
+            resolve(response)
+          })
           .catch((error) => {
             this.commit('unsetCurrentUser', error.message)
             reject(error)
@@ -43,6 +46,7 @@ export default {
           .then((response) => {
             if (!response.data.error) {
               this.commit('setCurrentUser', response.data)
+              resolve(response)
             } else {
               this.commit('unsetCurrentUser', response.data.error)
               reject(response.data.error)

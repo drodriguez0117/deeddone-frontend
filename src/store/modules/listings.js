@@ -18,28 +18,30 @@ export default {
   mutations: {
     setListings (state, listings) {
       state.listings = listings
+    },
+    clearListings (state) {
+      state.listings = []
     }
   },
   actions: {
     async fetchListings ({ commit }) {
       await plainAxiosInstance.get('/listings')
         .then((response) => commit('setListings', response.data))
-    },
-    /*       this.$http.plain.get('/listings')
-        .then((response) => {
-          commit('setListings', response.data)
-          this.$store.dispatch('unsetCurrentUser')
+        .catch(error => {
+          commit('clearListings')
+          return Promise.reject(error)
         })
-        .catch(error => this.setError(error, 'Cannot get listings'))
-    }, */
+    },
     async fetchListingsByUser ({commit}, id) {
       await securedAxiosInstance.get('/listings/' + id)
         .then(response => {
           commit('setListings', response.data)
-          this.state.listings = response.data
-          this.user_email = this.$store.getters.currentUserName
+          return Promise.resolve(response)
         })
-        .catch((error) => error)
+        .catch(error => {
+          commit('clearListings')
+          return Promise.reject(error)
+        })
     }
   }
 }

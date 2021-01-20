@@ -11,7 +11,7 @@
         {{ error }}
     </v-alert>
     <h3> {{ this.$store.getters.currentUserName }} Listings</h3>
-    <v-btn v-on:click="getUserListings">Only My Listings</v-btn>
+    <v-btn v-on:click="getUserListings" v-show="this.$store.getters.currentUserName">Only My Listings</v-btn>
     <v-container>
       <v-row dense>
         <v-col

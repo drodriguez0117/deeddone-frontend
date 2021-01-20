@@ -8,9 +8,7 @@
               <div>
                 <v-form
                   ref="form"
-                  lazy-validation
-                  @submit="validateLogin"
-                  @submit.prevent="loginUser">
+                  @submit.prevent="validateLogin">
                   <v-card-title>have a cigar...</v-card-title>
                   <v-alert
                     v-if="errors.length"
@@ -38,7 +36,9 @@
                     min="8"
                     required
                   ></v-text-field>
-                  <v-btn type="submit" color="primary">Log In</v-btn>
+                  <v-btn
+                    type="submit"
+                    color="primary">Log In</v-btn>
                 </v-form>
               </div>
             </v-card-text>
@@ -76,8 +76,19 @@ export default {
           password: this.password
         }
         this.$store.dispatch('signIn', userCredentials)
-          .then(() => this.$router.push('/'))
-          .catch((error) => { this.errors.push(error.message) })
+          .then((response) => this.$router.push('/'))
+          .catch((error) => {
+            switch (error.response.status) {
+              case 401:
+                this.errors.push('Unauthorized')
+                break
+              case 404:
+                this.errors.push('User not found')
+                break
+              default:
+                this.error.push(error.message)
+            }
+          })
       }
     },
     isUserLoggedIn () {
@@ -85,12 +96,18 @@ export default {
         this.$router.push('/')
       }
     },
-    validateLogin: function (e) {
+    validateLogin: function (event) {
+      this.errors = []
+
       if (this.email && this.password) {
+        this.loginUser()
         return true
       }
 
-      this.errors = []
+      if (!this.email && !this.password) {
+        event.preventDefault()
+        return false
+      }
 
       if (!this.email) {
         this.errors.push('Email required')
@@ -99,8 +116,7 @@ export default {
       if (!this.password) {
         this.errors.push('Password required')
       }
-
-      e.preventDefault()
+      event.preventDefault()
     }
   }
 }
