@@ -27,36 +27,32 @@ export default {
     }
   },
   actions: {
-    signIn (commit, user) {
-      return new Promise((resolve, reject) => {
-        plainAxiosInstance.post('/login', {email: user.email, password: user.password})
-          .then((response) => {
-            this.commit('setCurrentUser', response.data)
-            resolve(response)
-          })
-          .catch((error) => {
-            this.commit('unsetCurrentUser', error.message)
-            reject(error)
-          })
-      })
+    async signIn (commit, user) {
+      await plainAxiosInstance.post('/login', {email: user.email, password: user.password})
+        .then((response) => {
+          this.commit('setCurrentUser', response.data)
+          return Promise.resolve(response)
+        })
+        .catch((error) => {
+          this.commit('unsetCurrentUser', error.message)
+          return Promise.reject(error)
+        })
     },
     register (commit, user) {
-      return new Promise((resolve, reject) => {
-        plainAxiosInstance.post('/register', user)
-          .then((response) => {
-            if (!response.data.error) {
-              this.commit('setCurrentUser', response.data)
-              resolve(response)
-            } else {
-              this.commit('unsetCurrentUser', response.data.error)
-              reject(response.data.error)
-            }
-          })
-          .catch((error) => {
-            this.commit('unsetCurrentUser', error.message)
-            reject(error)
-          })
-      })
+      plainAxiosInstance.post('/register', user)
+        .then((response) => {
+          if (!response.data.error) {
+            this.commit('setCurrentUser', response.data)
+            return Promise.resolve(response)
+          } else {
+            this.commit('unsetCurrentUser', response.data.error)
+            return Promise.reject(response.data.error)
+          }
+        })
+        .catch((error) => {
+          this.commit('unsetCurrentUser', error.message)
+          return Promise.reject(error)
+        })
     }
   },
   plugins: [createPersistedState]
