@@ -4,10 +4,10 @@
 
 ## Technologies
 
-Webpack configuration
-Axios
-Vuex
-Vuetify
+* Webpack configuration
+* Axios
+* Vuex
+* Vuetify
 
 ## Build Setup
 
