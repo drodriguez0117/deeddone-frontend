@@ -16,8 +16,8 @@ describe('Listings', () => {
   it('should display username with Listings text', () => {
     const store = new Vuex.Store({
       getters: {
-        currentUserId: () => 23,
-        currentUserName: () => 'melvin@domain.com'
+        getCurrentUserId: () => 23,
+        getCurrentUserName: () => 'melvin@domain.com'
       }
     })
     const wrapper = shallowMount(Listing, {store, localVue})

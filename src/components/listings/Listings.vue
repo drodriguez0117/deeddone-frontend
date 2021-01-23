@@ -1,6 +1,6 @@
 <template>
   <div class="listings">
-    <v-btn v-on:click="logout" v-show="this.$store.getters.currentUserName">Log Out</v-btn>
+    <v-btn v-on:click="logout" v-show="this.$store.getters['users/getCurrentUserName']">Log Out</v-btn>
     <v-alert
       v-if="error"
       text
@@ -10,8 +10,8 @@
     >
         {{ error }}
     </v-alert>
-    <h3> {{ this.$store.getters.currentUserName }} Listings</h3>
-    <v-btn v-on:click="getUserListings" v-show="this.$store.getters.currentUserName">Only My Listings</v-btn>
+    <h3> {{ this.$store.getters['users/getCurrentUserName'] }} Listings</h3>
+    <v-btn v-on:click="getUserListings" v-show="this.$store.getters['users/getCurrentUserName']">Only My Listings</v-btn>
     <v-container>
       <v-row dense>
         <v-col
@@ -81,13 +81,13 @@ export default {
       this.error = (error.response && error.response.data && error.response.data.error)
     },
     getListings () {
-      if (!this.$store.getters.currentUserId) {
-        this.$store.dispatch('fetchListings')
+      if (!this.$store.getters['users/getCurrentUserId']) {
+        this.$store.dispatch('listings/fetchListings')
       }
     },
     getUserListings () {
-      if (this.$store.getters.currentUserId) {
-        this.error = this.$store.dispatch('fetchListingsByUser', this.$store.getters.currentUserId)
+      if (this.$store.getters['users/getCurrentUserId']) {
+        this.error = this.$store.dispatch('listings/fetchListingsByUser', this.$store.getters['users/getCurrentUserId'])
         if (this.error) {
           this.setError(this.error, 'Issue retrieving listings for user')
         }
@@ -96,14 +96,14 @@ export default {
     logout () {
       this.$http.secured.delete('/login')
         .then(response => {
-          this.$store.commit('unsetCurrentUser')
+          this.$store.commit('users/unsetCurrentUser')
         })
         .catch(error => this.setError(error, 'Cannot log out'))
     }
   },
   computed: {
     visibleListings () {
-      return this.$store.getters.getListings(true)
+      return this.$store.getters['listings/getListings'](true)
     }
   }
 }

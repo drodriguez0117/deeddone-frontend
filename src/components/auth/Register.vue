@@ -83,8 +83,8 @@ export default {
           password: this.password,
           password_confirmation: this.password_confirmation
         }
-        this.$store.dispatch('register', newUser)
-          .then(() => this.$router.push('/listings'))
+        this.$store.dispatch('users/register', newUser)
+          .then((response) => this.$router.push('/'))
           .catch((error) => { this.errors.push(error) })
       }
     },
@@ -98,6 +98,8 @@ export default {
 
       if (!this.email) {
         this.errors.push('Email Address is required')
+      } else if (!this.validEmail(this.email)) {
+        this.errors.push('Valid Email required')
       }
 
       if (!this.password) {
@@ -105,7 +107,7 @@ export default {
       }
 
       if (this.password.length < 8) {
-        this.errors.push('Minimum password length requirement')
+        this.errors.push('Minimum password length: 8')
       }
 
       if (!this.password_confirmation) {
@@ -113,13 +115,17 @@ export default {
       }
 
       if (this.password !== this.password_confirmation) {
-        this.errors.push('Password Confirmation does not match password')
+        this.errors.push('Password Confirmation does not match Password')
       }
 
-      if (this.email && this.password && this.password_confirmation && this.password.length >= 8) {
+      if (this.email && this.password && this.password_confirmation) {
         return true
       }
       e.preventDefault()
+    },
+    validEmail: function (email) {
+      var reg = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+      return reg.test(email)
     }
   }
 }

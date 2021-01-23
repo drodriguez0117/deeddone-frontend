@@ -2,6 +2,7 @@ import filter from '../../components/listings/filter-listings'
 import { plainAxiosInstance, securedAxiosInstance } from '../../backend/axios/index'
 
 export default {
+  namespaced: true,
   state: {
     listings: []
   },

@@ -75,19 +75,10 @@ export default {
           email: this.email,
           password: this.password
         }
-        this.$store.dispatch('signIn', userCredentials)
+        this.$store.dispatch('users/signIn', userCredentials)
           .then((response) => this.$router.push('/'))
           .catch((error) => {
-            switch (error.response.status) {
-              case 401:
-                this.errors.push('Unauthorized')
-                break
-              case 404:
-                this.errors.push('User not found')
-                break
-              default:
-                this.error.push(error.message)
-            }
+            this.setSignInError(error)
           })
       }
     },
@@ -99,14 +90,14 @@ export default {
     validateLogin: function (event) {
       this.errors = []
 
-      if (this.email && this.password) {
-        this.loginUser()
-        return true
-      }
-
       if (!this.email && !this.password) {
         event.preventDefault()
         return false
+      }
+
+      if (this.email && this.password) {
+        this.loginUser()
+        return true
       }
 
       if (!this.email) {
@@ -116,7 +107,26 @@ export default {
       if (!this.password) {
         this.errors.push('Password required')
       }
+
       event.preventDefault()
+    },
+    setSignInError (error) {
+      this.errors = []
+
+      if (!error.response) {
+        this.errors.push(error.message)
+      } else {
+        switch (error.response.status) {
+          case 401:
+            this.errors.push('Unauthorized')
+            break
+          case 404:
+            this.errors.push('User not found')
+            break
+          default:
+            this.errors.push('Undefined Error on login')
+        }
+      }
     }
   }
 }

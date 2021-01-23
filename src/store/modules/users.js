@@ -2,16 +2,17 @@ import createPersistedState from 'vuex-persistedstate'
 import { plainAxiosInstance } from '../../backend/axios/index'
 
 export default {
+  namespaced: true,
   state: {
     currentUser: {},
     loggedIn: false,
     errors: []
   },
   getters: {
-    currentUserId (state) {
+    getCurrentUserId (state) {
       return state.currentUser.id
     },
-    currentUserName (state) {
+    getCurrentUserName (state) {
       return state.currentUser.email
     }
   },
@@ -30,27 +31,26 @@ export default {
     async signIn (commit, user) {
       await plainAxiosInstance.post('/login', {email: user.email, password: user.password})
         .then((response) => {
-          this.commit('setCurrentUser', response.data)
+          this.commit('users/setCurrentUser', response.data)
           return Promise.resolve(response)
         })
         .catch((error) => {
-          this.commit('unsetCurrentUser', error.message)
+          this.commit('users/unsetCurrentUser', error.message)
           return Promise.reject(error)
         })
     },
-    register (commit, user) {
-      plainAxiosInstance.post('/register', user)
+    async register (commit, user) {
+      await plainAxiosInstance.post('/register', user)
         .then((response) => {
           if (!response.data.error) {
-            this.commit('setCurrentUser', response.data)
+            this.commit('users/setCurrentUser', response.data)
             return Promise.resolve(response)
           } else {
-            this.commit('unsetCurrentUser', response.data.error)
+            this.commit('users/unsetCurrentUser', response.data.error)
             return Promise.reject(response.data.error)
           }
         })
         .catch((error) => {
-          this.commit('unsetCurrentUser', error.message)
           return Promise.reject(error)
         })
     }

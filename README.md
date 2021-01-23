@@ -2,6 +2,13 @@
 
 > Vue.js project for deeddone
 
+## Technologies
+
+Webpack configuration
+Axios
+Vuex
+Vuetify
+
 ## Build Setup
 
 ``` bash
