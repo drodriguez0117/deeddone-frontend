@@ -116,16 +116,7 @@ export default {
       if (!error.response) {
         this.errors.push(error.message)
       } else {
-        switch (error.response.status) {
-          case 401:
-            this.errors.push('Unauthorized')
-            break
-          case 404:
-            this.errors.push('User not found')
-            break
-          default:
-            this.errors.push('Undefined Error on login')
-        }
+        this.errors.push('Login failed.  Please check email and password')
       }
     }
   }

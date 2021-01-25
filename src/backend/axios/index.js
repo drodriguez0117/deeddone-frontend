@@ -36,13 +36,13 @@ securedAxiosInstance.interceptors.response.use(null, async error => {
     try {
       const response = await plainAxiosInstance.post('/refresh', {}, { headers: { 'X-CSRF-TOKEN': store.state.users.csrf } })
       plainAxiosInstance.get('/login')
-        .then(meResponse => store.commit('setCurrentUser', { currentUser: meResponse.data, csrf: response.data.csrf }))
+        .then(meResponse => store.commit('users/setCurrentUser', { currentUser: meResponse.data, csrf: response.data.csrf }))
       // and after successful refresh - repeat the original request
       let retryConfig = error.response.config
       retryConfig.headers['X-CSRF-TOKEN'] = response.data.csrf
       return plainAxiosInstance.request(retryConfig)
     } catch (error) {
-      store.commit('unsetCurrentUser')
+      store.commit('users/unsetCurrentUser')
       // redirect to login in case refresh request fails
       location.replace('/login')
       return Promise.reject(error)

@@ -11,7 +11,7 @@
         {{ error }}
     </v-alert>
     <h3> {{ this.$store.getters['users/getCurrentUserName'] }} Listings</h3>
-    <v-btn v-on:click="getUserListings" v-show="this.$store.getters['users/getCurrentUserName']">Only My Listings</v-btn>
+    <v-btn v-on:click="setUserId" v-show="this.$store.getters['users/getCurrentUserName']">Only My Listings</v-btn>
     <v-container>
       <v-row dense>
         <v-col
@@ -63,6 +63,8 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
+
 export default {
   name: 'Listings',
   created () {
@@ -70,10 +72,15 @@ export default {
   },
   data () {
     return {
+      filteredUserId: null,
       error: ''
     }
   },
   methods: {
+    ...mapGetters({getUserId: 'users/getCurrentUserId'}),
+    ...mapActions('listings', ['fetchListings']),
+    ...mapActions('users', ['signOut']),
+
     clickMe () {
       console.log('here you go...')
     },
@@ -81,29 +88,31 @@ export default {
       this.error = (error.response && error.response.data && error.response.data.error)
     },
     getListings () {
-      if (!this.$store.getters['users/getCurrentUserId']) {
-        this.$store.dispatch('listings/fetchListings')
-      }
-    },
-    getUserListings () {
-      if (this.$store.getters['users/getCurrentUserId']) {
-        this.error = this.$store.dispatch('listings/fetchListingsByUser', this.$store.getters['users/getCurrentUserId'])
-        if (this.error) {
-          this.setError(this.error, 'Issue retrieving listings for user')
-        }
-      }
+      this.fetchListings()
     },
     logout () {
-      this.$http.secured.delete('/login')
-        .then(response => {
-          this.$store.commit('users/unsetCurrentUser')
-        })
-        .catch(error => this.setError(error, 'Cannot log out'))
+      console.log('logout')
+      var es = this.signOut(this.$store.state.users.currentUser)
+
+      if (es) {
+        this.filteredUserId = null
+      }
+
+      // this.$http.secured.delete('/login')
+      //   .then(response => {
+      //     // console.log('after logout response')
+      //     // this.signOut(null)
+      //     this.filteredUserId = null
+      //   })
+      //   .catch(error => this.setError(error, 'Cannot log out'))
+    },
+    setUserId () {
+      this.filteredUserId = this.getUserId()
     }
   },
   computed: {
-    visibleListings () {
-      return this.$store.getters['listings/getListings'](true)
+    visibleListings: function () {
+      return this.$store.getters['listings/getFilteredListings'](this.filteredUserId)
     }
   }
 }

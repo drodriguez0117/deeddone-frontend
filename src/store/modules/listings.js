@@ -1,4 +1,4 @@
-import filter from '../../components/listings/filter-listings'
+// import filter from '../../components/listings/filter-listings'
 import { plainAxiosInstance, securedAxiosInstance } from '../../backend/axios/index'
 
 export default {
@@ -7,13 +7,9 @@ export default {
     listings: []
   },
   getters: {
-    getUserListings (state, id) {
-      return filter.getUserListings(state.listings, id)
-    },
-    getListings (state, isActive) {
-      if (isActive) {
-        return (listings) => state.listings
-      }
+    getFilteredListings: (state) => (id) => {
+      if (!id) { return state.listings }
+      return state.listings.filter((listing) => listing.user_id === id)
     }
   },
   mutations: {
@@ -26,6 +22,7 @@ export default {
   },
   actions: {
     async fetchListings ({ commit }) {
+      console.log('fetchListings')
       await plainAxiosInstance.get('/listings')
         .then((response) => commit('setListings', response.data))
         .catch(error => {
@@ -33,7 +30,8 @@ export default {
           return Promise.reject(error)
         })
     },
-    async fetchListingsByUser ({commit}, id) {
+    async fetchListingsByUser ({ commit }, id) {
+      console.log('fetchListingsByUser: ' + id)
       await securedAxiosInstance.get('/listings/' + id)
         .then(response => {
           commit('setListings', response.data)

@@ -1,5 +1,6 @@
 import createPersistedState from 'vuex-persistedstate'
-import { plainAxiosInstance } from '../../backend/axios/index'
+import { plainAxiosInstance, securedAxiosInstance } from '../../backend/axios/index'
+import axios from 'axios'
 
 export default {
   namespaced: true,
@@ -9,7 +10,11 @@ export default {
     errors: []
   },
   getters: {
+    // clearUserName: state => (id) => {
+    //   return false
+    // },
     getCurrentUserId (state) {
+      console.log('getCurrentUserId: ' + state.currentUser.id)
       return state.currentUser.id
     },
     getCurrentUserName (state) {
@@ -21,38 +26,53 @@ export default {
       state.currentUser = currentUser
       state.loggedIn = true
     },
-    unsetCurrentUser (state, errorMessage) {
+    unsetCurrentUser (state, payload) {
       state.currentUser = {}
       state.loggedIn = false
-      state.errors.push(errorMessage)
+      state.errors.push(payload)
     }
   },
   actions: {
-    async signIn (commit, user) {
+    async signIn ({ commit }, user) {
       await plainAxiosInstance.post('/login', {email: user.email, password: user.password})
         .then((response) => {
-          this.commit('users/setCurrentUser', response.data)
+          console.log('in signin')
+          commit('setCurrentUser', response.data)
           return Promise.resolve(response)
         })
         .catch((error) => {
-          this.commit('users/unsetCurrentUser', error.message)
+          commit('unsetCurrentUser', error.message)
           return Promise.reject(error)
         })
     },
-    async register (commit, user) {
+    async register ({ commit }, user) {
       await plainAxiosInstance.post('/register', user)
         .then((response) => {
           if (!response.data.error) {
-            this.commit('users/setCurrentUser', response.data)
+            commit('setCurrentUser', response.data)
             return Promise.resolve(response)
           } else {
-            this.commit('users/unsetCurrentUser', response.data.error)
+            commit('unsetCurrentUser', response.data.error)
             return Promise.reject(response.data.error)
           }
         })
         .catch((error) => {
           return Promise.reject(error)
         })
+    },
+    async signOut ({ commit }, user) {
+      await securedAxiosInstance.delete('login', user)
+        .then((response) => { return Promise.resolve(response) })
+        .catch((error) => {
+          console.log(error)
+          return Promise.reject(error)
+        })
+      // await axios.delete('http://localhost:3000/login', user)
+      //   .then((response) => { return Promise.resolve(response) })
+      //   .catch((error) => {
+      //     console.log(error)
+      //     return Promise.reject(error)
+      //   })
     }
   },
   plugins: [createPersistedState]
