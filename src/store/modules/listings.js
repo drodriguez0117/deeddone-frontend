@@ -41,6 +41,16 @@ export default {
           commit('clearListings')
           return Promise.reject(error)
         })
+    },
+    createListing ({ commit }, listing) {
+      console.log('createListing')
+      securedAxiosInstance.post('admin/listings', listing)
+        .then((response) => {
+          console.log(response)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     }
   }
 }

@@ -1,6 +1,6 @@
 import createPersistedState from 'vuex-persistedstate'
 import { plainAxiosInstance, securedAxiosInstance } from '../../backend/axios/index'
-import axios from 'axios'
+// import axios from 'axios'
 
 export default {
   namespaced: true,
@@ -61,7 +61,7 @@ export default {
         })
     },
     async signOut ({ commit }, user) {
-      await securedAxiosInstance.delete('login', user)
+      await securedAxiosInstance.delete('/login')
         .then((response) => { return Promise.resolve(response) })
         .catch((error) => {
           console.log(error)

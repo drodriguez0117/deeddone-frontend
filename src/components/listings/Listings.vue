@@ -1,6 +1,6 @@
 <template>
   <div class="listings">
-    <v-btn v-on:click="logout" v-show="this.$store.getters['users/getCurrentUserName']">Log Out</v-btn>
+    <v-btn v-on:click="createCard" v-show="this.$store.getters['users/getCurrentUserName']">Log Out</v-btn>
     <v-alert
       v-if="error"
       text
@@ -78,7 +78,7 @@ export default {
   },
   methods: {
     ...mapGetters({getUserId: 'users/getCurrentUserId'}),
-    ...mapActions('listings', ['fetchListings']),
+    ...mapActions('listings', ['fetchListings', 'createListing']),
     ...mapActions('users', ['signOut']),
 
     clickMe () {
@@ -108,6 +108,25 @@ export default {
     },
     setUserId () {
       this.filteredUserId = this.getUserId()
+    },
+    createCard () {
+      const cardProperties = {
+        listing: {
+          title: 'test title',
+          description: 'only come out at night',
+          listing_type: 'offering',
+          category_id: 1
+        }
+      }
+      console.log(cardProperties)
+      this.createListing(cardProperties)
+      // this.$http.secured.post('admin/listings', cardProperties)
+      //   .then((response) => {
+      //     console.log(response.status)
+      //   })
+      //   .catch((error) => {
+      //     console.log(error)
+      //   })
     }
   },
   computed: {
