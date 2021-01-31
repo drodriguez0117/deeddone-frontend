@@ -1,4 +1,3 @@
-import { axios } from 'vue/types/umd'
 import createPersistedState from 'vuex-persistedstate'
 import { plainAxiosInstance, securedAxiosInstance } from '../../backend/axios/index'
 
@@ -38,7 +37,6 @@ export default {
     async signIn ({ commit }, user) {
       await plainAxiosInstance.post('/login', {email: user.email, password: user.password})
         .then((response) => {
-          console.log('in signin')
           commit('setCurrentUser', response.data)
           return Promise.resolve(response)
         })

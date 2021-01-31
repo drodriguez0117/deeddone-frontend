@@ -22,7 +22,6 @@ export default {
   },
   actions: {
     async fetchListings ({ commit }) {
-      console.log('fetchListings')
       await plainAxiosInstance.get('/listings')
         .then((response) => commit('setListings', response.data))
         .catch(error => {
@@ -42,8 +41,8 @@ export default {
           return Promise.reject(error)
         })
     },
-    async createListing ({ commit }, listing) {
-      await securedAxiosInstance.post('admin/listings', listing)
+    async createListing ({ commit }, formData) {
+      await securedAxiosInstance.post('admin/listings', formData)
         .then(response => {
           return Promise.resolve(response)
         })

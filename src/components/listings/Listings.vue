@@ -1,6 +1,11 @@
 <template>
   <div class="listings">
-    <v-btn v-on:click="createCard" v-show="this.$store.getters['users/getCurrentUserName']">Log Out</v-btn>
+    <form action="http://localhost:8080/api/v1/admin/listings"
+      enctype="multipart/form-data"
+      method="post">
+      <p>Image :</p><input type="file" accept="image/*" ref="inputImage" @change=uploadImage()>
+      <v-btn v-on:click="createCard" v-show="this.$store.getters['users/getCurrentUserName']">Create that shit!</v-btn>
+    </form>
     <h3> {{ this.status }} </h3>
     <v-alert
       v-if="error"
@@ -75,7 +80,9 @@ export default {
     return {
       filteredUserId: null,
       error: '',
-      status: 'This should be a status from create'
+      status: 'This should be a status from create',
+      images: [],
+      form: new FormData()
     }
   },
   methods: {
@@ -85,6 +92,13 @@ export default {
 
     clickMe () {
       console.log('here you go...')
+    },
+    uploadImage () {
+      let images = this.$refs.inputImage.files[0]
+      this.form.append('listing[images][]', images)
+      // for (let image in images) {
+      //   this.form.append('listing[images][]', image[0])
+      // }
     },
     setError (error, text) {
       this.error = (error.response && error.response.data && error.response.data.error)
@@ -105,15 +119,17 @@ export default {
     },
     createCard () {
       const cardProperties = {
-        listing: {
-          title: 'test title',
-          description: 'only come out at night',
-          listing_type: 'offering',
-          category_id: 1
-        }
+        title: 'test title',
+        description: 'only come out at night',
+        listing_type: 'offering',
+        category_id: 1
       }
-      console.log(cardProperties)
-      this.createListing(cardProperties)
+
+      Object.entries(cardProperties).forEach(
+        ([key, value]) => this.form.append('listing[' + key + ']', value)
+      )
+
+      this.createListing(this.form)
         .then((response) => {
           console.log(response)
         })
