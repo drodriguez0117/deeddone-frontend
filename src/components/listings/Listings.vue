@@ -1,9 +1,10 @@
 <template>
   <div class="listings">
+    <h3> {{ this.$store.getters['users/getCurrentUserName'] }} Listings</h3>
     <form action="http://localhost:8080/api/v1/admin/listings"
       enctype="multipart/form-data"
       method="post">
-      <p>Image :</p><input type="file" accept="image/*" ref="inputImage" @change=uploadImage()>
+      <input type="file" accept="image/*" ref="inputImage" @change=uploadImage() multiple>
       <v-btn v-on:click="createCard" v-show="this.$store.getters['users/getCurrentUserName']">Create that shit!</v-btn>
     </form>
     <h3> {{ this.status }} </h3>
@@ -16,7 +17,6 @@
     >
         {{ error }}
     </v-alert>
-    <h3> {{ this.$store.getters['users/getCurrentUserName'] }} Listings</h3>
     <v-btn v-on:click="setUserId" v-show="this.$store.getters['users/getCurrentUserName']">Only My Listings</v-btn>
     <v-container>
       <v-row dense>
@@ -94,11 +94,15 @@ export default {
       console.log('here you go...')
     },
     uploadImage () {
-      let images = this.$refs.inputImage.files[0]
-      this.form.append('listing[images][]', images)
-      // for (let image in images) {
-      //   this.form.append('listing[images][]', image[0])
-      // }
+      // this works for a single file
+      // let imag = this.$refs.inputImage.files[0]
+      // this.form.append('listing[images][]', imag)
+
+      var fileCount = this.$refs.inputImage.files.length
+
+      for (var i = 0; i < fileCount; i++) {
+        this.form.append('listing[images][]', this.$refs.inputImage.files[i])
+      }
     },
     setError (error, text) {
       this.error = (error.response && error.response.data && error.response.data.error)
@@ -131,11 +135,12 @@ export default {
 
       this.createListing(this.form)
         .then((response) => {
-          console.log(response)
+          this.status = 'card created!'
+          this.form = new FormData()
+          this.fetchListings()
         })
         .catch((error) => {
-          this.error = error
-          console.log(error)
+          this.setError(error)
         })
     }
   },

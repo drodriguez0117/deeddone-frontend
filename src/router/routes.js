@@ -15,7 +15,7 @@ export default [
   },
   {
     path: '/',
-    name: 'list',
+    name: 'listings',
     component: Listings
   },
   {

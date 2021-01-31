@@ -76,7 +76,7 @@ export default {
           password: this.password
         }
         this.$store.dispatch('users/signIn', userCredentials)
-          .then(() => this.$router.push('/'))
+          .then(() => this.$router.push({ name: 'listings' }))
           .catch((error) => {
             this.setSignInError(error)
           })
