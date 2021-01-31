@@ -1,18 +1,16 @@
+import { axios } from 'vue/types/umd'
 import createPersistedState from 'vuex-persistedstate'
 import { plainAxiosInstance, securedAxiosInstance } from '../../backend/axios/index'
-// import axios from 'axios'
 
 export default {
   namespaced: true,
   state: {
     currentUser: {},
     loggedIn: false,
-    errors: []
+    errors: [],
+    token: null
   },
   getters: {
-    // clearUserName: state => (id) => {
-    //   return false
-    // },
     getCurrentUserId (state) {
       console.log('getCurrentUserId: ' + state.currentUser.id)
       return state.currentUser.id
@@ -25,11 +23,15 @@ export default {
     setCurrentUser (state, currentUser) {
       state.currentUser = currentUser
       state.loggedIn = true
+      state.token = currentUser.token
+      localStorage.setItem('user', JSON.stringify(currentUser))
+      // axios.defaults.headers.common['Authorization'] = `Bearer ${currentUser.token}`
     },
     unsetCurrentUser (state, payload) {
       state.currentUser = {}
       state.loggedIn = false
       state.errors.push(payload)
+      state.token = null
     }
   },
   actions: {
@@ -47,7 +49,7 @@ export default {
     },
     async register ({ commit }, user) {
       await plainAxiosInstance.post('/register', user)
-        .then((response) => {
+        .then(({ response }) => {
           if (!response.data.error) {
             commit('setCurrentUser', response.data)
             return Promise.resolve(response)
@@ -67,12 +69,6 @@ export default {
           console.log(error)
           return Promise.reject(error)
         })
-      // await axios.delete('http://localhost:3000/login', user)
-      //   .then((response) => { return Promise.resolve(response) })
-      //   .catch((error) => {
-      //     console.log(error)
-      //     return Promise.reject(error)
-      //   })
     }
   },
   plugins: [createPersistedState]

@@ -84,7 +84,7 @@ export default {
           password_confirmation: this.password_confirmation
         }
         this.$store.dispatch('users/register', newUser)
-          .then((response) => this.$router.push('/'))
+          .then(() => this.$router.push('/'))
           .catch((error) => { this.errors.push(error) })
       }
     },

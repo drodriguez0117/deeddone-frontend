@@ -1,6 +1,7 @@
 <template>
   <div class="listings">
     <v-btn v-on:click="createCard" v-show="this.$store.getters['users/getCurrentUserName']">Log Out</v-btn>
+    <h3> {{ this.status }} </h3>
     <v-alert
       v-if="error"
       text
@@ -73,7 +74,8 @@ export default {
   data () {
     return {
       filteredUserId: null,
-      error: ''
+      error: '',
+      status: 'This should be a status from create'
     }
   },
   methods: {
@@ -97,14 +99,6 @@ export default {
       if (es) {
         this.filteredUserId = null
       }
-
-      // this.$http.secured.delete('/login')
-      //   .then(response => {
-      //     // console.log('after logout response')
-      //     // this.signOut(null)
-      //     this.filteredUserId = null
-      //   })
-      //   .catch(error => this.setError(error, 'Cannot log out'))
     },
     setUserId () {
       this.filteredUserId = this.getUserId()
@@ -120,13 +114,13 @@ export default {
       }
       console.log(cardProperties)
       this.createListing(cardProperties)
-      // this.$http.secured.post('admin/listings', cardProperties)
-      //   .then((response) => {
-      //     console.log(response.status)
-      //   })
-      //   .catch((error) => {
-      //     console.log(error)
-      //   })
+        .then((response) => {
+          console.log(response)
+        })
+        .catch((error) => {
+          this.error = error
+          console.log(error)
+        })
     }
   },
   computed: {

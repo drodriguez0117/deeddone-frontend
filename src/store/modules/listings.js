@@ -42,14 +42,14 @@ export default {
           return Promise.reject(error)
         })
     },
-    createListing ({ commit }, listing) {
-      console.log('createListing')
-      securedAxiosInstance.post('admin/listings', listing)
-        .then((response) => {
-          console.log(response)
+    async createListing ({ commit }, listing) {
+      await securedAxiosInstance.post('admin/listings', listing)
+        .then(response => {
+          return Promise.resolve(response)
         })
         .catch((error) => {
           console.log(error)
+          return Promise.reject(error)
         })
     }
   }
