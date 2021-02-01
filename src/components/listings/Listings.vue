@@ -7,7 +7,7 @@
       <input type="file" accept="image/*" ref="inputImage" @change=uploadImage() multiple>
       <v-btn v-on:click="createCard" v-show="this.$store.getters['users/getCurrentUserName']">Create that shit!</v-btn>
     </form>
-    <h3> {{ this.status }} </h3>
+    <h3> {{ status }} </h3>
     <v-alert
       v-if="error"
       text
@@ -20,47 +20,8 @@
     <v-btn v-on:click="setUserId" v-show="this.$store.getters['users/getCurrentUserName']">Only My Listings</v-btn>
     <v-container>
       <v-row dense>
-        <v-col
-          cols="3"
-          v-for="listing in visibleListings"
-          v-bind:key="listing.id"
-          >
-          <v-card
-            class="d-flex"
-            :elevation="listing - 1"
-            max-width="374"
-          >
-            <v-img
-              v-if="listing.images.length > 0"
-              v-bind:src="'http://localhost:3000' + listing.images[0].image"
-              height="200px"
-              aspect-ratio="1"
-              @click="clickMe"
-            >
-              <v-app-bar
-                flat
-                color="rgba(0, 0, 0, 0)"
-              >
-                <v-toolbar-title class="white-text">
-                  <span class="white-text">{{ listing.listing_type }}</span>
-                </v-toolbar-title>
-                <v-spacer></v-spacer>
-              </v-app-bar>
-            </v-img>
-            <v-card-subtitle
-              v-text="listing.title"
-              align="left"
-            >
-            </v-card-subtitle>
-            <v-card-text
-              v-text="listing.description"
-              align="left"
-            >
-            </v-card-text>
-            <v-card-text>
-                {{ listing.category.name }} {{ moment(listing.created_at).format('MM/DD/YYYY') }}
-            </v-card-text>
-          </v-card>
+        <v-col cols="3" v-for="listing in visibleListings" v-bind:key="listing.id">
+          <listing-card v-bind:listing="listing"></listing-card>
         </v-col>
       </v-row>
     </v-container>
@@ -70,9 +31,13 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import ListingCard from '@/components/listings/ListingCard.vue'
 
 export default {
   name: 'Listings',
+  components: {
+    ListingCard
+  },
   created () {
     this.getListings()
   },

@@ -44,7 +44,7 @@
             </v-card-text>
           </v-card>
           <div>
-            <router-link to="/register">Need to Register</router-link>
+            <router-link to="/register">Not an active member? Register</router-link>
           </div>
         </v-flex>
       </v-layout>

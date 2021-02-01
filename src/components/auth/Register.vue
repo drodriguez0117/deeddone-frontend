@@ -50,7 +50,7 @@
             </v-card-text>
           </v-card>
           <div>
-            <router-link to="/login">Need to log in</router-link>
+            <router-link to="/login">Need to log in?</router-link>
           </div>
         </v-flex>
       </v-layout>
