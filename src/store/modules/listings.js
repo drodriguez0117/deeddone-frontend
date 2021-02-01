@@ -42,6 +42,7 @@ export default {
         })
     },
     async createListing ({ commit }, formData) {
+      console.log(formData)
       await securedAxiosInstance.post('admin/listings', formData)
         .then(response => {
           return Promise.resolve(response)

@@ -17,7 +17,7 @@
     >
         {{ error }}
     </v-alert>
-    <v-btn v-on:click="setUserId" v-show="this.$store.getters['users/getCurrentUserName']">Only My Listings</v-btn>
+    <v-btn v-on:click="clickMe" v-show="this.$store.getters['users/getCurrentUserName']">Create New Card</v-btn>
     <v-container>
       <v-row dense>
         <v-col cols="3" v-for="listing in visibleListings" v-bind:key="listing.id">
@@ -56,7 +56,7 @@ export default {
     ...mapActions('users', ['signOut']),
 
     clickMe () {
-      console.log('here you go...')
+      this.$router.push('/listings/create')
     },
     uploadImage () {
       // this works for a single file
