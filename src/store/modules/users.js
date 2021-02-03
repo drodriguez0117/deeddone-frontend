@@ -1,5 +1,6 @@
 import createPersistedState from 'vuex-persistedstate'
 import { plainAxiosInstance, securedAxiosInstance } from '../../backend/axios/index'
+import axios from 'axios'
 
 export default {
   namespaced: true,
@@ -11,11 +12,13 @@ export default {
   },
   getters: {
     getCurrentUserId (state) {
-      console.log('getCurrentUserId: ' + state.currentUser.id)
       return state.currentUser.id
     },
     getCurrentUserName (state) {
       return state.currentUser.email
+    },
+    getToken (state) {
+      return state.token
     }
   },
   mutations: {
@@ -24,7 +27,7 @@ export default {
       state.loggedIn = true
       state.token = currentUser.token
       localStorage.setItem('user', JSON.stringify(currentUser))
-      // axios.defaults.headers.common['Authorization'] = `Bearer ${currentUser.token}`
+      axios.defaults.headers.common['Authorization'] = `Bearer ${currentUser.token}`
     },
     unsetCurrentUser (state, payload) {
       state.currentUser = {}
@@ -64,7 +67,6 @@ export default {
       await securedAxiosInstance.delete('/login')
         .then((response) => { return Promise.resolve(response) })
         .catch((error) => {
-          console.log(error)
           return Promise.reject(error)
         })
     }

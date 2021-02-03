@@ -35,13 +35,9 @@
                 <label for="typeOffering">Offering</label>
                 <input type="radio" id="typeRequest" value="request" v-model="listing_type">
                 <label for="typeOffering">Request</label>
-                <div>
-                  <select v-model="category_id">
-                    <option value="">Select Category</option>
-                    <option value="0">Indoors</option>
-                    <option value="1">Outdoors</option>
-                  </select>
-                </div>
+                <select v-model="category_id">
+                  <option v-for="category in getDropdownCategories" v-bind:key="category.id" :value="category.name">{{ category.name }}</option>
+                </select>
                 <form action="http://localhost:8080/api/v1/admin/listings"
                   enctype="multipart/form-data"
                   method="post">
@@ -62,6 +58,9 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'create',
+  created () {
+    this.getCategories()
+  },
   data () {
     return {
       title: '',
@@ -76,7 +75,7 @@ export default {
   },
   methods: {
     ...mapGetters({getUserId: 'users/getCurrentUserId'}),
-    ...mapActions('listings', ['fetchListings', 'createListing']),
+    ...mapActions('categories', ['fetchCategories']),
 
     uploadImage () {
       // this works for a single file
@@ -88,6 +87,9 @@ export default {
       for (var i = 0; i < fileCount; i++) {
         this.form.append('listing[images][]', this.$refs.inputImage.files[i])
       }
+    },
+    getCategories () {
+      this.fetchCategories()
     },
     createCard () {
       const cardProperties = {
@@ -112,6 +114,11 @@ export default {
     },
     setError (error, text) {
       this.error = (error.response && error.response.data && error.response.data.error)
+    }
+  },
+  computed: {
+    getDropdownCategories: function () {
+      return this.$store.getters['categories/getCategories']
     }
   }
 }

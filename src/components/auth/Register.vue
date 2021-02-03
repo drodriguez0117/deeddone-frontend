@@ -84,13 +84,13 @@ export default {
           password_confirmation: this.password_confirmation
         }
         this.$store.dispatch('users/register', newUser)
-          .then(() => this.$router.push({ name: 'listings' }))
+          .then(() => this.$router.push('/'))
           .catch((error) => { this.errors.push(error) })
       }
     },
     isUserLoggedIn () {
       if (this.$store.state.users.loggedIn) {
-        this.$router.push({ name: 'listings' })
+        this.$router.push('/')
       }
     },
     validateRegistration: function (e) {

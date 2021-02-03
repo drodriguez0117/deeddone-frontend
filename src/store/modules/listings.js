@@ -4,7 +4,9 @@ import { plainAxiosInstance, securedAxiosInstance } from '../../backend/axios/in
 export default {
   namespaced: true,
   state: {
-    listings: []
+    listings: [],
+    category: {id: null, name: ''},
+    categories: []
   },
   getters: {
     getFilteredListings: (state) => (id) => {
@@ -14,23 +16,26 @@ export default {
   },
   mutations: {
     setListings (state, listings) {
+      console.log('setListings')
       state.listings = listings
     },
     clearListings (state) {
+      console.log('clearListings')
       state.listings = []
     }
   },
   actions: {
     async fetchListings ({ commit }) {
       await plainAxiosInstance.get('/listings')
-        .then((response) => commit('setListings', response.data))
+        .then((response) => {
+          commit('setListings', response.data)
+        })
         .catch(error => {
           commit('clearListings')
           return Promise.reject(error)
         })
     },
     async fetchListingsByUser ({ commit }, id) {
-      console.log('fetchListingsByUser: ' + id)
       await securedAxiosInstance.get('/listings/' + id)
         .then(response => {
           commit('setListings', response.data)
@@ -42,7 +47,6 @@ export default {
         })
     },
     async createListing ({ commit }, formData) {
-      console.log(formData)
       await securedAxiosInstance.post('admin/listings', formData)
         .then(response => {
           return Promise.resolve(response)
