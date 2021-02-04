@@ -1,5 +1,5 @@
 <template>
-  <div class="create">
+  <div class="create" id="app" data-app>
     <v-container>
       <v-layout>
         <v-flex sm9 sm6>
@@ -35,9 +35,15 @@
                 <label for="typeOffering">Offering</label>
                 <input type="radio" id="typeRequest" value="request" v-model="listing_type">
                 <label for="typeOffering">Request</label>
-                <select v-model="category_id">
+                <!-- <select v-model="category_id">
                   <option v-for="category in getDropdownCategories" v-bind:key="category.id" :value="category.id">{{ category.name }}</option>
-                </select>
+                </select> -->
+                <v-select v-model="category_id"
+                  :items="getDropdownCategories"
+                  item-value="id"
+                  item-text="name"
+                  label="category"
+                  outlined ></v-select>
                 <form action="http://localhost:8080/api/v1/admin/listings"
                   enctype="multipart/form-data"
                   method="post">
