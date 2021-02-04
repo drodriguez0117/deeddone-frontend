@@ -36,7 +36,7 @@
                 <input type="radio" id="typeRequest" value="request" v-model="listing_type">
                 <label for="typeOffering">Request</label>
                 <select v-model="category_id">
-                  <option v-for="category in getDropdownCategories" v-bind:key="category.id" :value="category.name">{{ category.name }}</option>
+                  <option v-for="category in getDropdownCategories" v-bind:key="category.id" :value="category.id">{{ category.name }}</option>
                 </select>
                 <form action="http://localhost:8080/api/v1/admin/listings"
                   enctype="multipart/form-data"
@@ -76,6 +76,7 @@ export default {
   methods: {
     ...mapGetters({getUserId: 'users/getCurrentUserId'}),
     ...mapActions('categories', ['fetchCategories']),
+    ...mapActions('listings', ['createListing']),
 
     uploadImage () {
       // this works for a single file

@@ -22,18 +22,21 @@ export default {
     }
   },
   mutations: {
-    setCurrentUser (state, currentUser) {
-      state.currentUser = currentUser
+    setCurrentUser (state, payload) {
+      state.currentUser = payload
       state.loggedIn = true
-      state.token = currentUser.token
-      localStorage.setItem('user', JSON.stringify(currentUser))
-      axios.defaults.headers.common['Authorization'] = `Bearer ${currentUser.token}`
+      state.token = payload.token
+      localStorage.setItem('user', JSON.stringify(payload))
+      localStorage.setItem('jwt', payload.token)
+      axios.defaults.headers.common['Authorization'] = `Bearer ${payload.token}`
     },
     unsetCurrentUser (state, payload) {
       state.currentUser = {}
       state.loggedIn = false
       state.errors.push(payload)
       state.token = null
+      localStorage.removeItem('user')
+      localStorage.removeItem('jwt')
     }
   },
   actions: {

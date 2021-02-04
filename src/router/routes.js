@@ -27,6 +27,9 @@ export default [
   {
     path: '/listings/create',
     name: 'create',
-    component: ListingCardCreate
+    component: ListingCardCreate,
+    meta: {
+      requiresAuth: true
+    }
   }
 ]
