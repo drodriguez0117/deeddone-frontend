@@ -24,26 +24,32 @@
                 </v-alert>
                 <v-text-field
                   v-model="title"
-                  label="title"
+                  label="What do you want to give or get?"
                   required
                 ></v-text-field>
                 <v-text-field
                   v-model="description"
-                  label="description"
+                  label="Describe your offer or request"
                 ></v-text-field>
-                <input type="radio" id="typeOffering" value="offering" v-model="listing_type">
-                <label for="typeOffering">Offering</label>
-                <input type="radio" id="typeRequest" value="request" v-model="listing_type">
-                <label for="typeOffering">Request</label>
-                <!-- <select v-model="category_id">
-                  <option v-for="category in getDropdownCategories" v-bind:key="category.id" :value="category.id">{{ category.name }}</option>
-                </select> -->
                 <v-select v-model="category_id"
                   :items="getDropdownCategories"
                   item-value="id"
                   item-text="name"
                   label="category"
                   outlined ></v-select>
+                <input type="radio" id="typeOffering" value="offering" v-model="listing_type">
+                <label for="typeOffering">Offering</label>
+                <input type="radio" id="typeRequest" value="request" v-model="listing_type">
+                <label for="typeOffering">Request</label>
+                <v-select v-model="exchange_id"
+                  :items="getDropdownExchanges"
+                  item-value="id"
+                  item-text="name"
+                  label="exchange"
+                  outlined ></v-select>
+                <!-- <select v-model="category_id">
+                  <option v-for="category in getDropdownCategories" v-bind:key="category.id" :value="category.id">{{ category.name }}</option>
+                </select> -->
                 <form action="http://localhost:8080/api/v1/admin/listings"
                   enctype="multipart/form-data"
                   method="post">
@@ -66,6 +72,7 @@ export default {
   name: 'create',
   created () {
     this.getCategories()
+    this.getExchanges()
   },
   data () {
     return {
@@ -73,6 +80,7 @@ export default {
       description: '',
       images: [],
       category_id: null,
+      exchange_id: null,
       listing_type: '',
       form: new FormData(),
       status: '',
@@ -82,6 +90,7 @@ export default {
   methods: {
     ...mapGetters({getUserId: 'users/getCurrentUserId'}),
     ...mapActions('categories', ['fetchCategories']),
+    ...mapActions('exchanges', ['fetchExchanges']),
     ...mapActions('listings', ['createListing']),
 
     uploadImage () {
@@ -97,6 +106,9 @@ export default {
     },
     getCategories () {
       this.fetchCategories()
+    },
+    getExchanges () {
+      this.fetchExchanges()
     },
     createCard () {
       const cardProperties = {
@@ -126,6 +138,9 @@ export default {
   computed: {
     getDropdownCategories: function () {
       return this.$store.getters['categories/getCategories']
+    },
+    getDropdownExchanges: function () {
+      return this.$store.getters['exchanges/getExchanges']
     }
   }
 }
