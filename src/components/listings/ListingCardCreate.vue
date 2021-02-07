@@ -50,6 +50,18 @@
                 <!-- <select v-model="category_id">
                   <option v-for="category in getDropdownCategories" v-bind:key="category.id" :value="category.id">{{ category.name }}</option>
                 </select> -->
+                <v-row
+                  justify="space-around"
+                  align="center"
+                >
+                  <v-radio-group v-model="expires_at">
+                  <template v-slot:label>
+                    <div><strong>When do you want this listing to expire?</strong></div>
+                  </template>
+                    <v-radio v-for="n in expired_types" :key="n" :label="`${n} ${ n === 1 ? 'day' : 'days'}`" :value="n">
+                    </v-radio>
+                  </v-radio-group>
+                </v-row>
                 <form action="http://localhost:8080/api/v1/admin/listings"
                   enctype="multipart/form-data"
                   method="post">
@@ -67,6 +79,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import moment from 'moment'
 
 export default {
   name: 'create',
@@ -84,7 +97,9 @@ export default {
       listing_type: '',
       form: new FormData(),
       status: '',
-      errors: []
+      errors: [],
+      expires_at: 3,
+      expired_types: [1, 3, 7, 14, 30, 90]
     }
   },
   methods: {
@@ -116,7 +131,8 @@ export default {
         description: this.description,
         listing_type: this.listing_type,
         category_id: this.category_id,
-        exchange_id: this.exchange_id
+        exchange_id: this.exchange_id,
+        expired_at: moment().add(this.expires_at, 'days').format('yyyy-MM-DD')
       }
 
       Object.entries(cardProperties).forEach(
