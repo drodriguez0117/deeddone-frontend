@@ -115,7 +115,8 @@ export default {
         title: this.title,
         description: this.description,
         listing_type: this.listing_type,
-        category_id: this.category_id
+        category_id: this.category_id,
+        exchange_id: this.exchange_id
       }
 
       Object.entries(cardProperties).forEach(
