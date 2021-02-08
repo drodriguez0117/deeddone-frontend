@@ -58,9 +58,17 @@
                   <template v-slot:label>
                     <div><strong>When do you want this listing to expire?</strong></div>
                   </template>
-                    <v-radio v-for="n in expired_types" :key="n" :label="`${n} ${ n === 1 ? 'day' : 'days'}`" :value="n">
+                    <v-radio
+                      v-for="n in expired_types"
+                      :key="n"
+                      :label="`${n > 0 ? n : ''} ${ n == 0 ? 'custom' : n === 1 ? 'day' : 'days'}`"
+                      :value="n"
+                      v-on:click="showCalendar">
                     </v-radio>
                   </v-radio-group>
+                  <v-row justify="center">
+                    <v-date-picker v-model="expires_picker" v-show="expires_picker_visible"></v-date-picker>
+                  </v-row>
                 </v-row>
                 <form action="http://localhost:8080/api/v1/admin/listings"
                   enctype="multipart/form-data"
@@ -99,7 +107,9 @@ export default {
       status: '',
       errors: [],
       expires_at: 3,
-      expired_types: [1, 3, 7, 14, 30, 90]
+      expired_types: [1, 3, 7, 14, 30, 90, 0],
+      expires_picker: null,
+      expires_picker_visible: false
     }
   },
   methods: {
@@ -132,7 +142,7 @@ export default {
         listing_type: this.listing_type,
         category_id: this.category_id,
         exchange_id: this.exchange_id,
-        expired_at: moment().add(this.expires_at, 'days').format('yyyy-MM-DD')
+        expires_at: this.getExpiresDate
       }
 
       Object.entries(cardProperties).forEach(
@@ -150,6 +160,10 @@ export default {
     },
     setError (error, text) {
       this.error = (error.response && error.response.data && error.response.data.error)
+    },
+    showCalendar () {
+      console.log('showCalendar: ' + this.expires_at)
+      this.expires_picker_visible = this.expires_at === 0
     }
   },
   computed: {
@@ -158,6 +172,11 @@ export default {
     },
     getDropdownExchanges: function () {
       return this.$store.getters['exchanges/getExchanges']
+    },
+    getExpiresDate: function () {
+      var expiresDate = this.expires_at === 0 ? moment(this.expires_picker).add(1, 'days').diff(moment(), 'days') : this.expires_at
+      var days = moment().add(expiresDate, 'days').format('yyyy-MM-DD')
+      return days
     }
   }
 }
