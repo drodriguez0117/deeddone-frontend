@@ -1,5 +1,5 @@
 import createPersistedState from 'vuex-persistedstate'
-import { plainAxiosInstance, securedAxiosInstance } from '../../backend/axios/index'
+import { plainAxiosInstance } from '../../backend/axios/index'
 import axios from 'axios'
 
 export default {
@@ -66,12 +66,13 @@ export default {
           return Promise.reject(error)
         })
     },
-    async signOut ({ commit }, user) {
-      await securedAxiosInstance.delete('/login')
-        .then((response) => { return Promise.resolve(response) })
-        .catch((error) => {
-          return Promise.reject(error)
-        })
+    signOut ({ commit }) {
+      commit('unsetCurrentUser', null)
+      // await securedAxiosInstance.delete('/login')
+      //   .then((response) => { return Promise.resolve(response) })
+      //   .catch((error) => {
+      //     return Promise.reject(error)
+      //   })
     }
   },
   plugins: [createPersistedState]

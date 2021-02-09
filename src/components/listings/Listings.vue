@@ -5,7 +5,8 @@
       enctype="multipart/form-data"
       method="post">
       <input type="file" accept="image/*" ref="inputImage" @change=uploadImage() multiple>
-      <v-btn v-on:click="createCard" v-show="this.$store.getters['users/getCurrentUserName']">Create that shit!</v-btn>
+      <v-btn v-on:click="login" v-show="!this.$store.getters['users/getCurrentUserName']">Login</v-btn>
+      <v-btn v-on:click="logout" v-show="this.$store.getters['users/getCurrentUserName']">Logout</v-btn>
     </form>
     <h3> {{ status }} </h3>
     <v-alert
@@ -58,6 +59,12 @@ export default {
     clickMe () {
       this.$router.push('/listings/create')
     },
+    login () {
+      this.$router.push('/login')
+    },
+    logout () {
+      this.signOut()
+    },
     uploadImage () {
       // this works for a single file
       // let imag = this.$refs.inputImage.files[0]
@@ -75,14 +82,14 @@ export default {
     getListings () {
       this.fetchListings()
     },
-    logout () {
-      console.log('logout')
-      var es = this.signOut(this.$store.state.users.currentUser)
+    // logout () {
+    //   console.log('logout')
+    //   var es = this.signOut(this.$store.state.users.currentUser)
 
-      if (es) {
-        this.filteredUserId = null
-      }
-    },
+    //   if (es) {
+    //     this.filteredUserId = null
+    //   }
+    // },
     setUserId () {
       this.filteredUserId = this.getUserId()
     },

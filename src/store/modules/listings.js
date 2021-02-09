@@ -55,6 +55,16 @@ export default {
           console.log(error)
           return Promise.reject(error)
         })
+    },
+    async destroyListing ({ commit }, id) {
+      await securedAxiosInstance.delete('admin/listings/' + id)
+        .then(response => {
+          return Promise.resolve(response)
+        })
+        .catch((error) => {
+          console.log(error)
+          return Promise.reject(error)
+        })
     }
   }
 }

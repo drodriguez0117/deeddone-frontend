@@ -24,17 +24,50 @@
       <v-card-text align="left">
           {{ listing.category.name }} {{ moment(listing.created_at).format('MM/DD/YYYY') }} - {{ moment(listing.expires_at).format('MM/DD/YYYY') }}
       </v-card-text>
+      <v-card-actions>
+        <v-btn
+          text
+          color="deep-purple accent-4"
+          v-on:click="deleteListing"
+          v-show="authorizedUser"
+        >
+          Delete
+        </v-btn>
+      </v-card-actions>
     </v-card>
   </div>
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
 export default {
   props: {
     listing: Object
   },
   data () {
     return {
+      message: ''
+    }
+  },
+  methods: {
+    ...mapActions('listings', ['destroyListing']),
+
+    deleteListing () {
+      console.log('deleteListing' + this.listing.id)
+      this.destroyListing(this.listing.id)
+        .then((response) => {
+          console.log(response)
+          this.message = 'nice delete'
+          console.log(this.message)
+        })
+    }
+  },
+  computed: {
+    ...mapGetters({getUserId: 'users/getCurrentUserId'}),
+
+    authorizedUser: function () {
+      const userId = this.getUserId
+      return userId > 0 && this.listing.user_id === userId
     }
   }
 }
