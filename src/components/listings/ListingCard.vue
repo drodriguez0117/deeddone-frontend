@@ -11,28 +11,18 @@
         height="200px"
         aspect-ratio="1"
       >
-        <v-app-bar
-          flat
-          color="rgba(0, 0, 0, 0)"
-        >
+        <v-app-bar flat color="rgba(0, 0, 0, 0)">
           <v-toolbar-title class="white-text">
             <span class="white-text">{{ listing.listing_type }}</span>
           </v-toolbar-title>
           <v-spacer></v-spacer>
         </v-app-bar>
       </v-img>
-      <v-card-subtitle
-        v-text="listing.title"
-        align="left"
-      >
-      </v-card-subtitle>
-      <v-card-text
-        v-text="listing.description"
-        align="left"
-      >
-      </v-card-text>
-      <v-card-text>
-          {{ listing.category.name }} {{ moment(listing.created_at).format('MM/DD/YYYY') }}
+      <v-card-title v-text="listing.title" align="left"></v-card-title>
+      <v-card-subtitle v-text="listing.description" align="left">      </v-card-subtitle>
+      <v-card-text align="left">Exchange Mode: {{ listing.exchange.name }}</v-card-text>
+      <v-card-text align="left">
+          {{ listing.category.name }} {{ moment(listing.created_at).format('MM/DD/YYYY') }} - {{ moment(listing.expires_at).format('MM/DD/YYYY') }}
       </v-card-text>
     </v-card>
   </div>

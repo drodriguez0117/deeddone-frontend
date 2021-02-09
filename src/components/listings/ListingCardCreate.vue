@@ -3,7 +3,7 @@
     <v-container>
       <v-layout>
         <v-flex sm9 sm6>
-          <v-card>
+          <v-card width="500px">
             <v-card-text hover class="pt-1">
               <div>
                 <v-card-title>create listing...</v-card-title>
@@ -22,6 +22,18 @@
                     </li>
                   </ul>
                 </v-alert>
+                <v-radio-group
+                  v-model="listing_type"
+                  row>
+                  <v-radio
+                    label="Offering"
+                    value="offering"
+                  ></v-radio>
+                  <v-radio
+                    label="Request"
+                    value="request"
+                  ></v-radio>
+                </v-radio-group>
                 <v-text-field
                   v-model="title"
                   label="What do you want to give or get?"
@@ -29,24 +41,22 @@
                 ></v-text-field>
                 <v-text-field
                   v-model="description"
-                  label="Describe your offer or request"
+                  label="additional information"
                 ></v-text-field>
-                <v-select v-model="category_id"
-                  :items="getDropdownCategories"
-                  item-value="id"
-                  item-text="name"
-                  label="category"
-                  outlined ></v-select>
-                <input type="radio" id="typeOffering" value="offering" v-model="listing_type">
-                <label for="typeOffering">Offering</label>
-                <input type="radio" id="typeRequest" value="request" v-model="listing_type">
-                <label for="typeOffering">Request</label>
-                <v-select v-model="exchange_id"
-                  :items="getDropdownExchanges"
-                  item-value="id"
-                  item-text="name"
-                  label="exchange"
-                  outlined ></v-select>
+                <v-row>
+                  <v-select v-model="category_id"
+                    :items="getDropdownCategories"
+                    item-value="id"
+                    item-text="name"
+                    label="category"
+                    outlined></v-select>
+                  <v-select v-model="exchange_id"
+                    :items="getDropdownExchanges"
+                    item-value="id"
+                    item-text="name"
+                    label="exchange"
+                    outlined></v-select>
+                </v-row>
                 <!-- <select v-model="category_id">
                   <option v-for="category in getDropdownCategories" v-bind:key="category.id" :value="category.id">{{ category.name }}</option>
                 </select> -->
@@ -54,7 +64,7 @@
                   justify="space-around"
                   align="center"
                 >
-                  <v-radio-group v-model="expires_at">
+                  <!-- <v-radio-group v-model="expires_at">
                   <template v-slot:label>
                     <div><strong>When do you want this listing to expire?</strong></div>
                   </template>
@@ -65,10 +75,26 @@
                       :value="n"
                       v-on:click="showCalendar">
                     </v-radio>
-                  </v-radio-group>
-                  <v-row justify="center">
+                  </v-radio-group> -->
+                  <v-chip-group v-model="expires_at">expires?
+                  <!-- <template v-slot:label>
+                    <div><strong>When do you want this listing to expire?</strong></div>
+                  </template> -->
+                    <v-chip
+                      v-for="(n, i) in expired_types"
+                      :key="i"
+                      :label="true"
+                      :value="n"
+                      v-on:click="showCalendar"
+                      active-class="deep-purple accent-4 white--text"
+                      column>
+                    {{ n > 0 ? n : 'custom' }}
+                    </v-chip>
+                  </v-chip-group>
+                  <v-date-picker v-model="expires_picker" color="green lighten-1" header-color="primary" v-show="expires_picker_visible"></v-date-picker>
+                  <!-- <v-row justify="left">
                     <v-date-picker v-model="expires_picker" v-show="expires_picker_visible"></v-date-picker>
-                  </v-row>
+                  </v-row> -->
                 </v-row>
                 <form action="http://localhost:8080/api/v1/admin/listings"
                   enctype="multipart/form-data"
@@ -102,7 +128,7 @@ export default {
       images: [],
       category_id: null,
       exchange_id: null,
-      listing_type: '',
+      listing_type: 'offering',
       form: new FormData(),
       status: '',
       errors: [],
