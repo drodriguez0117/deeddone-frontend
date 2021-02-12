@@ -4,6 +4,7 @@ import { plainAxiosInstance, securedAxiosInstance } from '../../backend/axios/in
 export default {
   namespaced: true,
   state: {
+    listing: [],
     listings: [],
     category: {id: null, name: ''},
     categories: []
@@ -12,15 +13,16 @@ export default {
     getFilteredListings: (state) => (id) => {
       if (!id) { return state.listings }
       return state.listings.filter((listing) => listing.user_id === id)
+    },
+    getListingCategory: (state) => (id) => {
+      return state.listings.filter((listing) => listing.id === id)
     }
   },
   mutations: {
     setListings (state, listings) {
-      console.log('setListings')
       state.listings = listings
     },
     clearListings (state) {
-      console.log('clearListings')
       state.listings = []
     }
   },
@@ -29,6 +31,7 @@ export default {
       await plainAxiosInstance.get('/listings')
         .then((response) => {
           commit('setListings', response.data)
+          return Promise.resolve(response)
         })
         .catch(error => {
           commit('clearListings')
@@ -49,6 +52,17 @@ export default {
     async createListing ({ commit }, formData) {
       await securedAxiosInstance.post('admin/listings', formData)
         .then(response => {
+          return Promise.resolve(response)
+        })
+        .catch((error) => {
+          console.log(error)
+          return Promise.reject(error)
+        })
+    },
+    async updateListing ({ commit }, formData) {
+      await securedAxiosInstance.put('admin/listings', formData)
+        .then((response) => {
+          console.log(response.body)
           return Promise.resolve(response)
         })
         .catch((error) => {

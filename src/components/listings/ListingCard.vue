@@ -19,7 +19,7 @@
         </v-app-bar>
       </v-img>
       <v-card-title v-text="listing.title" align="left"></v-card-title>
-      <v-card-subtitle v-text="listing.description" align="left">      </v-card-subtitle>
+      <v-card-subtitle v-text="listing.description" align="left"></v-card-subtitle>
       <v-card-text align="left">Exchange Mode: {{ listing.exchange.name }}</v-card-text>
       <v-card-text align="left">
           {{ listing.category.name }} {{ moment(listing.created_at).format('MM/DD/YYYY') }} - {{ moment(listing.expires_at).format('MM/DD/YYYY') }}
@@ -32,6 +32,14 @@
           v-show="authorizedUser"
         >
           Delete
+        </v-btn>
+        <v-btn
+          text
+          color="deep-purple accent-4"
+          v-on:click="updateListing"
+          v-show="authorizedUser"
+        >
+          Update
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -50,7 +58,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('listings', ['destroyListing']),
+    ...mapActions('listings', ['destroyListing', 'updateListingId']),
 
     deleteListing () {
       console.log('deleteListing' + this.listing.id)
@@ -60,6 +68,9 @@ export default {
           this.message = 'nice delete'
           console.log(this.message)
         })
+    },
+    updateListing () {
+      this.$router.push({ name: 'update', params: { listing: this.listing } })
     }
   },
   computed: {
