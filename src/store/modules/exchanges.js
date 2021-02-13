@@ -29,7 +29,6 @@ export default {
         }
       })
         .then((response) => {
-          console.log(response.data)
           commit('setExchanges', response.data)
         })
         .catch(error => {

@@ -3,7 +3,7 @@
     <v-container>
       <v-layout>
         <v-flex sm9 sm6>
-          <v-card width="500px">
+          <v-card width="700px">
             <v-card-text hover class="pt-1">
               <div>
                 <router-link :to="{ name: 'listings' }">home</router-link>
@@ -23,28 +23,88 @@
                     </li>
                   </ul>
                 </v-alert>
-                <v-radio-group
-                  v-model="listing.listing_type"
-                  row>
-                  <v-radio
-                    label="Offering"
-                    value="offering"
-                  ></v-radio>
-                  <v-radio
-                    label="Request"
-                    value="request"
-                  ></v-radio>
-                </v-radio-group>
+                <v-row>
+                  <!-- listing type -->
+                  <v-col>
+                    <v-radio-group
+                      v-model="listing.listing_type"
+                      row>
+                      <v-radio
+                        label="Offering"
+                        value="offering"
+                      ></v-radio>
+                      <v-radio
+                        label="Request"
+                        value="request"
+                      ></v-radio>
+                    </v-radio-group>
+                  </v-col>
+                  <!-- upload images -->
+                  <v-col>
+                    <form action="http://localhost:8080/api/v1/admin/listings"
+                      enctype="multipart/form-data"
+                      method="post">
+                      <input type="file" accept="image/*" ref="input" @change="uploadImages()" multiple>
+                    </form>
+                  </v-col>
+                </v-row>
+                <!-- preview images -->
+                <v-item-group multiple>
+                  <v-container>
+                    <v-row>
+                      <v-col
+                        v-for="(n, i) in images"
+                        :key="i"
+                        cols="i"
+                        class="d-flex child-flex"
+                        >
+                        <v-item>
+                          <v-img
+                            v-bind:src="getPreviewSource(i)"
+                            alt="images"
+                            aspect-ratio="4"
+                          >
+                          </v-img>
+                        </v-item>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-item-group>
+                <!-- source images -->
+                <v-item-group multiple>
+                  <v-container>
+                    <v-row>
+                      <v-col
+                        v-for="(n, i) in listing.images"
+                        :key="i"
+                        cols="i"
+                        class="d-flex child-flex"
+                        >
+                        <v-item>
+                          <v-img
+                            v-bind:src="getImageSource(i)"
+                            alt="listing.images[i].image"
+                            aspect-ratio="4"
+                          >
+                          </v-img>
+                        </v-item>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-item-group>
+                <!-- title -->
                 <v-text-field
                   v-model="listing.title"
                   label="What do you want to give or get?"
                   required
                 ></v-text-field>
+                <!-- description -->
                 <v-text-field
                   v-model="listing.description"
                   label="additional information"
                 ></v-text-field>
                 <v-row>
+                  <!-- category -->
                   <v-col>
                     <v-select v-model="listing.category.id"
                       :items="getDropdownCategories"
@@ -53,6 +113,7 @@
                       label="category"
                       outlined></v-select>
                   </v-col>
+                  <!-- exchange -->
                   <v-col>
                   <v-select v-model="listing.exchange.id"
                     :items="getDropdownExchanges"
@@ -84,7 +145,7 @@
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
                           v-model="date"
-                          label="Picker in menu"
+                          label="Expires"
                           prepend-icon="mdi-calendar"
                           readonly
                           v-bind="attrs"
@@ -115,12 +176,7 @@
                     </v-menu>
                   </v-col>
                 </v-row>
-                <form action="http://localhost:8080/api/v1/admin/listings"
-                  enctype="multipart/form-data"
-                  method="post">
-                  <input type="file" accept="image/*" ref="inputImage" @change=uploadImage() multiple>
-                  <v-btn v-on:click="updateCard" v-show="this.$store.getters['users/getCurrentUserName']">Update!</v-btn>
-                </form>
+                <v-btn v-on:click="updateCard" v-show="this.$store.getters['users/getCurrentUserName']">Update!</v-btn>
               </div>
             </v-card-text>
           </v-card>
@@ -144,6 +200,7 @@ export default {
   data () {
     return {
       errors: [],
+      images: [],
       expires_picker: null,
       expires_picker_visible: false,
       expired_types: [1, 3, 7, 14, 30, 90, 0],
@@ -152,27 +209,30 @@ export default {
       date: this.listing.expires_at,
       menu: false,
       modal: false,
-      menu2: false
+      menu2: false,
+      previewImage: null
     }
   },
   methods: {
     ...mapActions('categories', ['fetchCategories']),
     ...mapActions('exchanges', ['fetchExchanges']),
 
-    uploadImage () {
-      // this works for a single file
-      // let imag = this.$refs.inputImage.files[0]
-      // this.form.append('listing[images][]', imag)
+    uploadImages () {
+      if (this.$refs.input.files && this.$refs.input.files[0]) {
+        var fileCount = this.$refs.input.files.length
 
-      var fileCount = this.$refs.inputImage.files.length
-
-      for (var i = 0; i < fileCount; i++) {
-        this.form.append('listing[images][]', this.$refs.inputImage.files[i])
+        if (fileCount > 0) {
+          for (var i = 0; i < fileCount; i++) {
+            // let reader = new FileReader()
+            // reader.onload = e => console.log(e.target.result)
+            // console.log(reader.readAsDataURL(this.$refs.input.files[i]))
+            var file = this.$refs.input.files[i]
+            this.images.push(URL.createObjectURL(file))
+          }
+        }
       }
     },
     getCategories () {
-      console.log(new Date().toISOString().substr(0, 10))
-      console.log('expires_at: ' + this.listing.expires_at)
       this.fetchCategories()
     },
     getExchanges () {
@@ -205,8 +265,13 @@ export default {
       this.error = (error.response && error.response.data && error.response.data.error)
     },
     showCalendar () {
-      console.log('showCalendar: ' + this.listing.expires_at)
       this.expires_picker_visible = this.expires_at === 0
+    },
+    getImageSource: function (i) {
+      return 'http://localhost:3000' + this.listing.images[i].image
+    },
+    getPreviewSource: function (i) {
+      return this.images[i]
     }
   },
   computed: {
