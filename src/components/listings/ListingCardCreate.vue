@@ -22,18 +22,28 @@
                     </li>
                   </ul>
                 </v-alert>
-                <v-radio-group
-                  v-model="listing_type"
-                  row>
-                  <v-radio
-                    label="Offering"
-                    value="offering"
-                  ></v-radio>
-                  <v-radio
-                    label="Request"
-                    value="request"
-                  ></v-radio>
-                </v-radio-group>
+                <v-row>
+                  <v-col>
+                    <v-radio-group
+                      v-model="listing_type"
+                      row>
+                      <v-radio
+                        label="Offering"
+                        value="offering"
+                      ></v-radio>
+                      <v-radio
+                        label="Request"
+                        value="request"
+                      ></v-radio>
+                    </v-radio-group>
+                  </v-col>
+                  <v-col>
+                    <image-viewer
+                      v-bind:images="this.listing.images"
+                      v-bind:isPreview="true">
+                    </image-viewer>
+                  </v-col>
+                </v-row>
                 <v-text-field
                   v-model="title"
                   label="What do you want to give or get?"
@@ -57,29 +67,11 @@
                     label="exchange"
                     outlined></v-select>
                 </v-row>
-                <!-- <select v-model="category_id">
-                  <option v-for="category in getDropdownCategories" v-bind:key="category.id" :value="category.id">{{ category.name }}</option>
-                </select> -->
                 <v-row
                   justify="space-around"
                   align="center"
                 >
-                  <!-- <v-radio-group v-model="expires_at">
-                  <template v-slot:label>
-                    <div><strong>When do you want this listing to expire?</strong></div>
-                  </template>
-                    <v-radio
-                      v-for="n in expired_types"
-                      :key="n"
-                      :label="`${n > 0 ? n : ''} ${ n == 0 ? 'custom' : n === 1 ? 'day' : 'days'}`"
-                      :value="n"
-                      v-on:click="showCalendar">
-                    </v-radio>
-                  </v-radio-group> -->
                   <v-chip-group v-model="expires_at">expires?
-                  <!-- <template v-slot:label>
-                    <div><strong>When do you want this listing to expire?</strong></div>
-                  </template> -->
                     <v-chip
                       v-for="(n, i) in expired_types"
                       :key="i"
@@ -92,14 +84,11 @@
                     </v-chip>
                   </v-chip-group>
                   <v-date-picker v-model="expires_picker" color="green lighten-1" header-color="primary" v-show="expires_picker_visible"></v-date-picker>
-                  <!-- <v-row justify="left">
-                    <v-date-picker v-model="expires_picker" v-show="expires_picker_visible"></v-date-picker>
-                  </v-row> -->
                 </v-row>
                 <form action="http://localhost:8080/api/v1/admin/listings"
                   enctype="multipart/form-data"
                   method="post">
-                  <input type="file" accept="image/*" ref="inputImage" @change=uploadImage() multiple>
+                  <input type="file" accept="image/*" ref="input" @change=uploadImages() multiple>
                   <v-btn v-on:click="createCard" v-show="this.$store.getters['users/getCurrentUserName']">Create that shit!</v-btn>
                 </form>
               </div>
@@ -114,9 +103,13 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import moment from 'moment'
+import ImageViewer from '@/components/ImageViewer.vue'
 
 export default {
   name: 'create',
+  components: {
+    ImageViewer
+  },
   created () {
     this.getCategories()
     this.getExchanges()
@@ -144,22 +137,28 @@ export default {
     ...mapActions('exchanges', ['fetchExchanges']),
     ...mapActions('listings', ['createListing']),
 
-    uploadImage () {
-      // this works for a single file
-      // let imag = this.$refs.inputImage.files[0]
-      // this.form.append('listing[images][]', imag)
-
-      var fileCount = this.$refs.inputImage.files.length
-
-      for (var i = 0; i < fileCount; i++) {
-        this.form.append('listing[images][]', this.$refs.inputImage.files[i])
-      }
-    },
     getCategories () {
       this.fetchCategories()
     },
     getExchanges () {
       this.fetchExchanges()
+    },
+    showCalendar () {
+      console.log('showCalendar: ' + this.expires_at)
+      this.expires_picker_visible = this.expires_at === 0
+    },
+    uploadImages () {
+      if (this.$refs.input.files && this.$refs.input.files[0]) {
+        var fileCount = this.$refs.input.files.length
+
+        if (fileCount > 0) {
+          for (var i = 0; i < fileCount; i++) {
+            var file = this.$refs.input.files[i]
+            this.images.push(URL.createObjectURL(file))
+            this.form.append('listing[images][]', file)
+          }
+        }
+      }
     },
     createCard () {
       const cardProperties = {
@@ -186,10 +185,6 @@ export default {
     },
     setError (error, text) {
       this.error = (error.response && error.response.data && error.response.data.error)
-    },
-    showCalendar () {
-      console.log('showCalendar: ' + this.expires_at)
-      this.expires_picker_visible = this.expires_at === 0
     }
   },
   computed: {

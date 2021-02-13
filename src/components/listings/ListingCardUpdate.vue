@@ -49,49 +49,13 @@
                   </v-col>
                 </v-row>
                 <!-- preview images -->
-                <v-item-group multiple>
-                  <v-container>
-                    <v-row>
-                      <v-col
-                        v-for="(n, i) in images"
-                        :key="i"
-                        cols="i"
-                        class="d-flex child-flex"
-                        >
-                        <v-item>
-                          <v-img
-                            v-bind:src="getPreviewSource(i)"
-                            alt="images"
-                            aspect-ratio="4"
-                          >
-                          </v-img>
-                        </v-item>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </v-item-group>
+                <image-viewer
+                  v-bind:images="this.images"
+                  v-bind:isPreview="true"></image-viewer>
                 <!-- source images -->
-                <v-item-group multiple>
-                  <v-container>
-                    <v-row>
-                      <v-col
-                        v-for="(n, i) in listing.images"
-                        :key="i"
-                        cols="i"
-                        class="d-flex child-flex"
-                        >
-                        <v-item>
-                          <v-img
-                            v-bind:src="getImageSource(i)"
-                            alt="listing.images[i].image"
-                            aspect-ratio="4"
-                          >
-                          </v-img>
-                        </v-item>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </v-item-group>
+                <image-viewer
+                  v-bind:images="listing.images"
+                  v-bind:isPreview="false"></image-viewer>
                 <!-- title -->
                 <v-text-field
                   v-model="listing.title"
@@ -190,8 +154,13 @@
 import { mapActions } from 'vuex'
 import moment from 'moment'
 
+import ImageViewer from '@/components/ImageViewer.vue'
+
 export default {
   name: 'update',
+  components: {
+    ImageViewer
+  },
   props: ['listing'],
   created () {
     this.getCategories()
@@ -217,26 +186,26 @@ export default {
     ...mapActions('categories', ['fetchCategories']),
     ...mapActions('exchanges', ['fetchExchanges']),
 
+    getCategories () {
+      this.fetchCategories()
+    },
+    getExchanges () {
+      this.fetchExchanges()
+    },
+    showCalendar () {
+      this.expires_picker_visible = this.expires_at === 0
+    },
     uploadImages () {
       if (this.$refs.input.files && this.$refs.input.files[0]) {
         var fileCount = this.$refs.input.files.length
 
         if (fileCount > 0) {
           for (var i = 0; i < fileCount; i++) {
-            // let reader = new FileReader()
-            // reader.onload = e => console.log(e.target.result)
-            // console.log(reader.readAsDataURL(this.$refs.input.files[i]))
             var file = this.$refs.input.files[i]
             this.images.push(URL.createObjectURL(file))
           }
         }
       }
-    },
-    getCategories () {
-      this.fetchCategories()
-    },
-    getExchanges () {
-      this.fetchExchanges()
     },
     updateCard () {
       const cardProperties = {
@@ -263,15 +232,6 @@ export default {
     },
     setError (error, text) {
       this.error = (error.response && error.response.data && error.response.data.error)
-    },
-    showCalendar () {
-      this.expires_picker_visible = this.expires_at === 0
-    },
-    getImageSource: function (i) {
-      return 'http://localhost:3000' + this.listing.images[i].image
-    },
-    getPreviewSource: function (i) {
-      return this.images[i]
     }
   },
   computed: {
