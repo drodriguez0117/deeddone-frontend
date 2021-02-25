@@ -24,6 +24,15 @@ export default {
     },
     clearListings (state) {
       state.listings = []
+    },
+    addImages (state, listing) {
+      state.listings.images = []
+      state.listings.images = listing.images
+    },
+    removeImage (state, { inputId, response }) {
+      var listingIndex = state.listings.findIndex(prop => prop.id === inputId)
+      var imageIndex = state.listings[listingIndex].images.findIndex(images => images.image === response)
+      state.listings[listingIndex].images.pop(imageIndex)
     }
   },
   actions: {
@@ -59,8 +68,8 @@ export default {
           return Promise.reject(error)
         })
     },
-    async updateListing ({ commit }, formData) {
-      await securedAxiosInstance.put('admin/listings', formData)
+    async updateListing ({ commit }, { id, formData }) {
+      await securedAxiosInstance.put('admin/listings/' + id, formData)
         .then((response) => {
           console.log(response.body)
           return Promise.resolve(response)
@@ -79,6 +88,25 @@ export default {
           console.log(error)
           return Promise.reject(error)
         })
+    },
+    async addImage ({ commit }, { id, formData }) {
+      await securedAxiosInstance.post('admin/listings/' + id + '/listing_images', formData)
+        .then((response) => {
+          commit.addImages(response.data)
+          return Promise.resolve(response)
+        })
+        .catch((error) => {
+          console.log(error)
+          return Promise.reject(error)
+        })
+    },
+    async destroyImage ({ commit }, { id, image }) {
+      let imageUrl = `${encodeURIComponent(image)}`
+      await securedAxiosInstance.delete('admin/listings/' + id + '/listing_images/' + imageUrl)
+        .then(() => {
+          commit('removeImage', { inputId: id, response: image })
+        })
+        .catch((error) => { console.log('do something here: ' + error) })
     }
   }
 }

@@ -39,7 +39,7 @@
                   </v-col>
                   <v-col>
                     <image-viewer
-                      v-bind:images="this.listing.images"
+                      v-bind:images="this.images"
                       v-bind:isPreview="true">
                     </image-viewer>
                   </v-col>
@@ -144,7 +144,6 @@ export default {
       this.fetchExchanges()
     },
     showCalendar () {
-      console.log('showCalendar: ' + this.expires_at)
       this.expires_picker_visible = this.expires_at === 0
     },
     uploadImages () {

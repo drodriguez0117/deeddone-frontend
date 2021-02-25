@@ -4,16 +4,17 @@
       <v-container>
         <v-row>
           <v-col
-            v-for="(n, i) in images"
-            :key="i"
-            cols="i"
+            v-for="(value, key) in images"
+            :key="key"
+            cols="key"
             class="d-flex child-flex"
             >
             <v-item>
               <v-img
-                v-bind:src="isPreview ? getPreviewSource(i) : getImageSource(i)"
+                :src="isPreview ? getSource(key) : getBackingSource(key)"
                 alt="images"
                 aspect-ratio="4"
+                v-on:click="deleteImage(key)"
               ></v-img>
             </v-item>
           </v-col>
@@ -24,17 +25,26 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
   props: {
     images: Array,
+    listingId: Number,
     isPreview: Boolean
   },
   methods: {
-    getImageSource: function (i) {
+    ...mapActions('listings', ['deleteImage']),
+
+    // this should all be refactored
+    getBackingSource: function (i) {
       return 'http://localhost:3000' + this.images[i].image
     },
-    getPreviewSource: function (i) {
+    getSource: function (i) {
       return this.images[i]
+    },
+    deleteImage: function (key) {
+      this.destroyImage({ id: this.listingId, image: this.images[key].image })
+        .catch((error) => { console.log('ugh, issue deleting: ' + error) })
     }
   }
 }
