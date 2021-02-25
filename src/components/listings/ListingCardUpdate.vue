@@ -41,20 +41,23 @@
                   </v-col>
                   <!-- upload images -->
                   <v-col>
-                    <form action="http://localhost:8080/api/v1/admin/listings"
+                    <form action="http://localhost:8080/api/v1/admin/listings/image_listings"
                       enctype="multipart/form-data"
                       method="post">
-                      <input type="file" accept="image/*" ref="input" @change="uploadImages()" multiple>
+                      <input type="file" accept="image/*" ref="input" @change="createImages()" multiple>
                     </form>
                   </v-col>
                 </v-row>
                 <!-- preview images -->
                 <image-viewer
+                  v-if="this.images"
                   v-bind:images="this.images"
                   v-bind:isPreview="true"></image-viewer>
                 <!-- source images -->
                 <image-viewer
+                  v-if="listing.images.length > 0"
                   v-bind:images="listing.images"
+                  v-bind:listingId="listing.id"
                   v-bind:isPreview="false"></image-viewer>
                 <!-- title -->
                 <v-text-field
@@ -185,6 +188,7 @@ export default {
   methods: {
     ...mapActions('categories', ['fetchCategories']),
     ...mapActions('exchanges', ['fetchExchanges']),
+    ...mapActions('listings', ['updateListing', 'addImage']),
 
     getCategories () {
       this.fetchCategories()
@@ -195,40 +199,108 @@ export default {
     showCalendar () {
       this.expires_picker_visible = this.expires_at === 0
     },
-    uploadImages () {
+    createImages () {
       if (this.$refs.input.files && this.$refs.input.files[0]) {
         var fileCount = this.$refs.input.files.length
 
         if (fileCount > 0) {
           for (var i = 0; i < fileCount; i++) {
-            var file = this.$refs.input.files[i]
+            this.form = new FormData()
+            let file = this.$refs.input.files[i]
             this.images.push(URL.createObjectURL(file))
+            this.listing.images.push(URL.createObjectURL(file))
+            this.form.append('images[]', file)
+
+            this.addImage({ id: this.listing.id, formData: this.form })
+              .then((response) => {
+                this.status = 'image added!'
+                this.form = new FormData()
+              })
+              .catch((error) => {
+                console.log(error)
+                this.setError(error)
+              })
+          }
+        }
+      }
+    },
+    uploadImages () {
+      if (this.$refs.input.files && this.$refs.input.files[0]) {
+        var fileCount = this.$refs.input.files.length
+
+        if (fileCount > 0) {
+          // if the source image is a category default picture, clear it out
+          if (this.listing.images.length === 1) {
+            var categoryImage = this.listing.category.default_image_path
+            var image = this.listing.images[0].image
+
+            if (image.slice(image.lastIndexOf('/') + 1, image.length) === categoryImage) {
+              this.listing.images = []
+            }
+          }
+
+          if (this.listing.images.length !== 0) {
+            for (var g = 0; g < this.listing.images.length; g++) {
+              let img = this.listing.images[0]
+              console.log('image stfy: ' + JSON.stringify(img))
+              console.log('image count: ' + this.images.length)
+              // this.form.append('listing[images][]', this.listing.images[g].image)
+              let file = this.listing.images[g].image
+
+              let storageUrl = 'http://localhost:8080' + this.listing.images[g].image
+              console.log('storage url: ' + storageUrl)
+
+              var blob = file.substr(28, file.lastIndexOf('/') - 1)
+              console.log('blob: ' + blob)
+
+              var filename = blob.slice(blob.lastIndexOf('/') + 1, blob.length)
+              console.log('filename: ' + filename)
+              var x = new Blob([blob], { type: 'image/jpeg' })
+
+              this.form.append('listing[images][]', x, filename)
+            }
+          }
+
+          for (var i = 0; i < fileCount; i++) {
+            let file = this.$refs.input.files[i]
+            this.images.push(URL.createObjectURL(file))
+            this.listing.images.push(URL.createObjectURL(file))
+            this.form.append('listing[images][]', file)
           }
         }
       }
     },
     updateCard () {
+      console.log('how many: ' + this.images.length)
       const cardProperties = {
         title: this.listing.title,
         description: this.listing.description,
         listing_type: this.listing.listing_type,
-        category_id: this.listing.category_id,
-        exchange_id: this.listing.exchange_id,
+        category_id: this.listing.category.id,
+        exchange_id: this.listing.exchange.id,
         expires_at: this.getExpiresDate
       }
+      // for (var i = 0; i < this.images.length; i++) {
+      //   this.form.append('listing[images][]', JSON.stringify(this.images[i]))
+      // }
 
       Object.entries(cardProperties).forEach(
         ([key, value]) => this.form.append('listing[' + key + ']', value)
       )
 
-      // this.updateListing(this.form)
-      //   .then((response) => {
-      //     this.status = 'card created!'
-      //     this.form = new FormData()
-      //   })
-      //   .catch((error) => {
-      //     this.setError(error)
-      //   })
+      for (var key in this.form) {
+        console.log(key, this.form[key])
+      }
+
+      this.updateListing({ id: this.listing.id, formData: this.form })
+        .then((response) => {
+          this.status = 'card updated!'
+          this.form = new FormData()
+        })
+        .catch((error) => {
+          console.log(error)
+          this.setError(error)
+        })
     },
     setError (error, text) {
       this.error = (error.response && error.response.data && error.response.data.error)
