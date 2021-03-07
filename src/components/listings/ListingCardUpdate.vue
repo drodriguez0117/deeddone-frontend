@@ -157,12 +157,12 @@
 import { mapActions } from 'vuex'
 import moment from 'moment'
 
-import ImageViewer from '@/components/ImageViewer.vue'
+import BaseImageViewer from '@/components/BaseImageViewer.vue'
 
 export default {
   name: 'update',
   components: {
-    ImageViewer
+    BaseImageViewer
   },
   props: ['listing'],
   created () {

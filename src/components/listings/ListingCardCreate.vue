@@ -103,12 +103,12 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import moment from 'moment'
-import ImageViewer from '@/components/ImageViewer.vue'
+import BaseImageViewer from '@/components/BaseImageViewer.vue'
 
 export default {
   name: 'create',
   components: {
-    ImageViewer
+    BaseImageViewer
   },
   created () {
     this.getCategories()

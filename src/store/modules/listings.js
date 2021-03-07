@@ -106,7 +106,19 @@ export default {
         .then(() => {
           commit('removeImage', { inputId: id, response: image })
         })
-        .catch((error) => { console.log('do something here: ' + error) })
+        .catch((error) => { console.log('jsus, do something here: ' + error) })
+    },
+    async searchListings ({ commit }, query) {
+      await plainAxiosInstance.get('/listings/search', {
+        params: {
+          qry: query,
+          filter_path: 'hits.hits._source'
+        }
+      })
+        .then((response) => {
+          commit('setListings', response.data)
+        })
+        .catch((error) => { console.log('search was wasted: ' + error) })
     }
   }
 }

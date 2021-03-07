@@ -1,6 +1,8 @@
 <template>
   <div class="listings">
     <h3> {{ this.$store.getters['users/getCurrentUserName'] }} Listings</h3>
+    <v-text-field v-model="search_term"></v-text-field>
+    <v-btn v-on:click="search">Search</v-btn>
     <form action="http://localhost:8080/api/v1/admin/listings"
       enctype="multipart/form-data"
       method="post">
@@ -46,6 +48,7 @@ export default {
     return {
       filteredUserId: null,
       error: '',
+      search_term: '',
       status: 'This should be a status from create',
       images: [],
       form: new FormData()
@@ -53,7 +56,7 @@ export default {
   },
   methods: {
     ...mapGetters({getUserId: 'users/getCurrentUserId'}),
-    ...mapActions('listings', ['fetchListings', 'createListing']),
+    ...mapActions('listings', ['fetchListings', 'createListing', 'searchListings']),
     ...mapActions('users', ['signOut']),
 
     clickMe () {
@@ -114,6 +117,9 @@ export default {
         .catch((error) => {
           this.setError(error)
         })
+    },
+    search () {
+      this.searchListings(this.search_term)
     }
   },
   computed: {
