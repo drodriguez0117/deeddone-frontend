@@ -1,26 +1,12 @@
 <template>
-  <div>
-    <v-item-group multiple>
-      <v-container>
-        <v-row>
-          <v-col
-            v-for="(value, key) in images"
-            :key="key"
-            cols="key"
-            class="d-flex child-flex"
-            >
-            <v-item>
-              <v-img
-                :src="isPreview ? getSource(key) : getBackingSource(key)"
-                alt="images"
-                aspect-ratio="4"
-                v-on:click="deleteImage(key)"
-              ></v-img>
-            </v-item>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-item-group>
+  <div class="images">
+    <img
+      v-for="(value, key) in images"
+      v-bind:key="key"
+      :src="isPreview ? getSource(key) : getBackingSource(key)"
+      alt="images"
+      v-on:click="deleteImage(key)"
+    >
   </div>
 </template>
 
@@ -51,4 +37,12 @@ export default {
 </script>
 
 <style scoped>
+img {
+  margin-left: 1px;
+  border-radius: 5px;
+  max-width: 164px;
+  max-height: 164px;
+  width: auto;
+  height: auto;
+}
 </style>

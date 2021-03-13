@@ -212,7 +212,8 @@ export default {
             this.form.append('images[]', file)
 
             this.addImage({ id: this.listing.id, formData: this.form })
-              .then((response) => {
+              .then(() => {
+                this.images = []
                 this.status = 'image added!'
                 this.form = new FormData()
               })

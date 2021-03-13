@@ -25,9 +25,10 @@ export default {
     clearListings (state) {
       state.listings = []
     },
-    addImages (state, response) {
-      state.listings.images = []
-      state.listings.images = response.data.images
+    addImages (state, { id, listing }) {
+      var listingIndex = state.listings.findIndex(prop => prop.id === id)
+      state.listings[listingIndex].images = []
+      state.listings[listingIndex].images = listing.images
     },
     removeImage (state, { inputId, response }) {
       var listingIndex = state.listings.findIndex(prop => prop.id === inputId)
@@ -92,8 +93,8 @@ export default {
     async addImage ({ commit }, { id, formData }) {
       await securedAxiosInstance.post('admin/listings/' + id + '/listing_images', formData)
         .then((response) => {
-          commit('addImages', { response })
-          return Promise.resolve(response)
+          commit('addImages', { id: id, listing: response.data })
+          return Promise.resolve()
         })
         .catch((error) => {
           console.log(error)
