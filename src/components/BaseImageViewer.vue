@@ -33,7 +33,7 @@ export default {
     isPreview: Boolean
   },
   methods: {
-    ...mapActions('listings', ['deleteImage']),
+    ...mapActions('listings', ['destroyImage']),
 
     // this should all be refactored
     getBackingSource: function (i) {

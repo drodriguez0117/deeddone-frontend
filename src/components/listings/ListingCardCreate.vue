@@ -38,10 +38,10 @@
                     </v-radio-group>
                   </v-col>
                   <v-col>
-                    <image-viewer
+                    <base-image-viewer
                       v-bind:images="this.images"
                       v-bind:isPreview="true">
-                    </image-viewer>
+                    </base-image-viewer>
                   </v-col>
                 </v-row>
                 <v-text-field

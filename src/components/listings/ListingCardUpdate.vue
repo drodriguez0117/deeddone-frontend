@@ -49,16 +49,16 @@
                   </v-col>
                 </v-row>
                 <!-- preview images -->
-                <image-viewer
+                <base-image-viewer
                   v-if="this.images"
                   v-bind:images="this.images"
-                  v-bind:isPreview="true"></image-viewer>
+                  v-bind:isPreview="true"></base-image-viewer>
                 <!-- source images -->
-                <image-viewer
+                <base-image-viewer
                   v-if="listing.images.length > 0"
                   v-bind:images="listing.images"
                   v-bind:listingId="listing.id"
-                  v-bind:isPreview="false"></image-viewer>
+                  v-bind:isPreview="false"></base-image-viewer>
                 <!-- title -->
                 <v-text-field
                   v-model="listing.title"
@@ -157,7 +157,7 @@
 import { mapActions } from 'vuex'
 import moment from 'moment'
 
-import BaseImageViewer from '@/components/BaseImageViewer.vue'
+import BaseImageViewer from '../BaseImageViewer.vue'
 
 export default {
   name: 'update',
