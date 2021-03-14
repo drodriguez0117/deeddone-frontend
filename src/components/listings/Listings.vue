@@ -63,6 +63,7 @@ export default {
   },
   computed: {
     activeListings: function () {
+      // return this.$store.getters['listings/getActiveListings']
       return this.$store.getters['listings/getFilteredListings'](this.filteredUserId)
     }
   }

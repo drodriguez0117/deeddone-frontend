@@ -10,6 +10,10 @@ export default {
     categories: []
   },
   getters: {
+    getActiveListings: (state) => {
+      console.log('listings: ' + this.listings)
+      return state.listings
+    },
     getFilteredListings: (state) => (id) => {
       if (!id) { return state.listings }
       return state.listings.filter((listing) => listing.user_id === id)

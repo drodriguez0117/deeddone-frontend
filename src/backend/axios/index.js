@@ -34,8 +34,8 @@ securedAxiosInstance.interceptors.request.use(config => {
 securedAxiosInstance.interceptors.response.use(null, async error => {
   if (error.response && error.response.config && error.response.status === 401) {
     try {
-      plainAxiosInstance.get('/login')
-        .then(response => store.commit('users/setCurrentUser', { currentUser: response }))
+      // plainAxiosInstance.get('/login')
+      // .then(response => store.commit('users/setCurrentUser', { currentUser: response }))
 
       return plainAxiosInstance.request()
     } catch (error) {

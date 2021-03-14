@@ -1,6 +1,35 @@
 <template>
-  <div id='listing-card'>
-    <v-card
+  <div>
+    <form class="listing">
+      <div>
+        <label>{{ listing.listing_type }}</label>
+      </div>
+      <img
+        v-if="listing.images.length > 0"
+        v-bind:src="'http://localhost:3000' + listing.images[0].image"
+        >
+      <div>
+        <label v-text="listing.title"></label>
+      </div>
+      <div>
+        <label v-text="listing.description"></label>
+      </div>
+      <div>
+        <label>Exchange Mode: {{ listing.exchange.name }}</label>
+      </div>
+      <div>
+        <label>
+          {{ listing.category.name }} {{ moment(listing.created_at).format('MM/DD/YYYY') }} - {{ moment(listing.expires_at).format('MM/DD/YYYY') }}
+        </label>
+      </div>
+      <button
+        v-on:click="updateListing"
+        v-show="authorizedUser">
+        Delete
+      </button>
+    </form>
+
+    <!-- <v-card
       class="d-flex"
       :elevation="listing - 1"
       max-width="374"
@@ -42,7 +71,7 @@
           Update
         </v-btn>
       </v-card-actions>
-    </v-card>
+    </v-card> -->
   </div>
 </template>
 
@@ -86,7 +115,19 @@ export default {
 </script>
 
 <style scoped>
-h4 {
-  color: green;
+.listing {
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  max-width: 375px;
+}
+img {
+  margin-left: 1px;
+  border-radius: 5px;
+  max-width: 164px;
+  max-height: 164px;
+  width: auto;
+  height: auto;
+}
+label {
+  text-align: left;
 }
 </style>
