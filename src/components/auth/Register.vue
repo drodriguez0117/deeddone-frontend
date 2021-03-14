@@ -1,61 +1,50 @@
 <template>
-  <v-app>
-    <v-container>
-      <v-layout>
-        <v-flex xs8 sm3>
-          <v-card>
-            <v-card-text hover class="pt-1">
-              <div>
-                <v-form
-                  ref="form"
-                  lazy-validation
-                  @submit="validateRegistration"
-                  @submit.prevent="register">
-                  <v-card-title>Welcome, Sign up!</v-card-title>
-                  <v-alert
-                    v-if="errors.length"
-                    type="error"
-                    prominent
-                  >
-                    <b>Please correct the following error(s):</b>
-                    <ul>
-                      <li
-                        v-for="error in errors"
-                        :key="error"
-                      >
-                        {{ error }}
-                      </li>
-                    </ul>
-                  </v-alert>
-                  <v-text-field
-                    v-model="email"
-                    label="Email Address"
-                    required
-                  ></v-text-field>
-                  <v-text-field
-                    v-model="password"
-                    label="Password"
-                    min="8"
-                    required
-                  ></v-text-field>
-                  <v-text-field
-                    v-model="password_confirmation"
-                    label="Password Confirmation"
-                    min="8"
-                    required
-                  ></v-text-field>
-                  <v-btn type="submit" color="primary">Sign Up</v-btn>
-                </v-form>
-              </div>
-            </v-card-text>
-          </v-card>
-          <div>
-            <router-link to="/login">Need to log in?</router-link>
-          </div>
-        </v-flex>
-      </v-layout>
-    </v-container>
-  </v-app>
+  <div>
+    <form novalidate class="form-register" @submit.prevent="validateRegistration">
+      <label><b>Welcome, Sign up!</b></label>
+      <div>
+        <input
+          type="text"
+          class="showBorder"
+          v-model="email"
+          required
+          placeholder="email address">
+      </div>
+      <div>
+        <input
+          type="text"
+          class="showBorder"
+          v-model="password"
+          min="8"
+          required
+          placeholder="password">
+      </div>
+      <div>
+        <input
+          type="text"
+          class="showBorder"
+          v-model="password_confirmation"
+          min="8"
+          required
+          placeholder="password confirmation">
+      </div>
+      <button
+        type="submit"
+        v-on:click="register"
+        class="showBorder">Sign Up</button>
+      <div
+        v-if="errors.length"
+        type="error"
+        prominent>
+        <ul>
+          <li v-for="(error, index) in errors" v-bind:key="index">{{ error }}</li>
+        </ul>
+      </div>
+    </form>
+    <div>
+      <router-link to="/login">Need to log in?</router-link>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -77,7 +66,7 @@ export default {
   },
   methods: {
     register () {
-      if (!this.errors.length) {
+      if (!this.errors.length && this.validateRegistration()) {
         const newUser = {
           email: this.email,
           password: this.password,
@@ -93,7 +82,7 @@ export default {
         this.$router.push('/')
       }
     },
-    validateRegistration: function (e) {
+    validateRegistration (e) {
       this.errors = []
 
       if (!this.email) {
@@ -121,7 +110,8 @@ export default {
       if (this.email && this.password && this.password_confirmation) {
         return true
       }
-      e.preventDefault()
+      // e.preventDefault()
+      return false
     },
     validEmail: function (email) {
       var reg = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
@@ -132,10 +122,23 @@ export default {
 </script>
 
 <style lang="css">
-  .form-register {
-    width: 70%;
-    max-width: 500px;
-    padding: 10% 15px;
-    margin: 0 auto;
-  }
+.form-register {
+  height: 350px;
+  width: 300px;
+  padding: 15px;
+  margin: 0 auto;
+  border: 2px solid;
+}
+.showBorder {
+  border: 2px solid red;
+  border-radius: 4px;
+  padding: 5px;
+}
+input {
+  padding: 10px;
+  margin: 10px;
+}
+ul {
+  list-style-type: none;
+}
 </style>

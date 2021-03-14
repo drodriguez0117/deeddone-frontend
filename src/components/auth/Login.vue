@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form class="form-login" @submit="validateLogin">
+    <form novalidate class="form-login" @submit="validateLogin">
       <label><b>have a cigar...</b></label>
       <div>
         <input
