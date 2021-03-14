@@ -1,55 +1,45 @@
 <template>
-  <v-app>
-    <v-container>
-      <v-layout>
-        <v-flex xs8 sm3>
-          <v-card>
-            <v-card-text hover class="pt-1">
-              <div>
-                <v-form
-                  ref="form"
-                  @submit.prevent="validateLogin">
-                  <v-card-title>have a cigar...</v-card-title>
-                  <v-alert
-                    v-if="errors.length"
-                    type="error"
-                    prominent
-                  >
-                    <b>Please correct the following error(s):</b>
-                    <ul>
-                      <li
-                        v-for="error in errors"
-                        :key="error"
-                      >
-                        {{ error }}
-                      </li>
-                    </ul>
-                  </v-alert>
-                  <v-text-field
-                    v-model="email"
-                    label="email address"
-                    required
-                  ></v-text-field>
-                  <v-text-field
-                    v-model="password"
-                    label="password"
-                    min="8"
-                    required
-                  ></v-text-field>
-                  <v-btn
-                    type="submit"
-                    color="primary">Log In</v-btn>
-                </v-form>
-              </div>
-            </v-card-text>
-          </v-card>
-          <div>
-            <router-link to="/register">Not an active member? Register</router-link>
-          </div>
-        </v-flex>
-      </v-layout>
-    </v-container>
-  </v-app>
+  <div>
+    <form class="form-login" @submit="validateLogin">
+      <label><b>have a cigar...</b></label>
+      <div>
+        <input
+          type="text"
+          class="showBorder"
+          v-model="email"
+          required
+          placeholder="email address">
+      </div>
+      <div>
+        <input
+          type="text"
+          class="showBorder"
+          v-model="password"
+          min="8"
+          required
+          placeholder="password">
+      </div>
+      <button
+        type="submit"
+        v-on:click="loginUser"
+        class="showBorder">Log In</button>
+      <div
+        v-if="errors.length"
+        type="error"
+        prominent>
+        <ul>
+          <li
+            v-for="error in errors"
+            :key="error">
+            {{ error }}
+          </li>
+        </ul>
+      </div>
+    </form>
+    <div>
+      <router-link to="/register">Not an active member? Register</router-link>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -76,7 +66,10 @@ export default {
           password: this.password
         }
         this.$store.dispatch('users/signIn', userCredentials)
-          .then(() => this.$router.push('/'))
+          .then(() => {
+            this.errors = []
+            this.$router.push('/')
+          })
           .catch((error) => {
             this.setSignInError(error)
           })
@@ -125,9 +118,22 @@ export default {
 
 <style lang="css">
 .form-login {
-  width: 70%;
-  max-width: 500px;
-  padding: 10% 15px;
+  height: 300px;
+  width: 300px;
+  padding: 15px;
   margin: 0 auto;
+  border: 2px solid;
+}
+.showBorder {
+  border: 2px solid red;
+  border-radius: 4px;
+  padding: 5px;
+}
+input {
+  padding: 10px;
+  margin: 10px;
+}
+ul {
+  list-style-type: none;
 }
 </style>
