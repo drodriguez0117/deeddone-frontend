@@ -85,11 +85,6 @@ export default {
         return false
       }
 
-      if (this.email && this.password) {
-        this.loginUser()
-        return true
-      }
-
       if (!this.email) {
         this.errors.push('Email required')
       }
