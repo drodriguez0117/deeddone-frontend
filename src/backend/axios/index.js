@@ -31,6 +31,12 @@ securedAxiosInstance.interceptors.request.use(config => {
   return config
 })
 
+// securedAxiosInstance.interceptors.response.use((response) => {
+//   console.log(response.data)
+//   return response
+// }, (error) => {
+//   console.log('shit' + error)
+// })
 securedAxiosInstance.interceptors.response.use(null, async error => {
   if (error.response && error.response.config && error.response.status === 401) {
     try {

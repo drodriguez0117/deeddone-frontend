@@ -69,18 +69,15 @@ export default {
           return Promise.resolve(response)
         })
         .catch((error) => {
-          console.log(error)
           return Promise.reject(error)
         })
     },
     async updateListing ({ commit }, { id, formData }) {
       await securedAxiosInstance.put('admin/listings/' + id, formData)
         .then((response) => {
-          console.log(response.body)
           return Promise.resolve(response)
         })
         .catch((error) => {
-          console.log(error)
           return Promise.reject(error)
         })
     },

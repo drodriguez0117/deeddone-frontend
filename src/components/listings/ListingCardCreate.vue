@@ -1,102 +1,92 @@
 <template>
   <div class="create" id="app" data-app>
-    <v-container>
-      <v-layout>
-        <v-flex sm9 sm6>
-          <v-card width="500px">
-            <v-card-text hover class="pt-1">
-              <div>
-                <v-card-title>create listing...</v-card-title>
-                <v-alert
-                  v-if="errors.length"
-                  type="error"
-                  prominent
-                >
-                  <b>Please correct the following error(s):</b>
-                  <ul>
-                    <li
-                      v-for="error in errors"
-                      :key="error"
-                    >
-                      {{ error }}
-                    </li>
-                  </ul>
-                </v-alert>
-                <v-row>
-                  <v-col>
-                    <v-radio-group
-                      v-model="listing_type"
-                      row>
-                      <v-radio
-                        label="Offering"
-                        value="offering"
-                      ></v-radio>
-                      <v-radio
-                        label="Request"
-                        value="request"
-                      ></v-radio>
-                    </v-radio-group>
-                  </v-col>
-                  <v-col>
-                    <base-image-viewer
-                      v-bind:images="this.images"
-                      v-bind:isPreview="true">
-                    </base-image-viewer>
-                  </v-col>
-                </v-row>
-                <v-text-field
-                  v-model="title"
-                  label="What do you want to give or get?"
-                  required
-                ></v-text-field>
-                <v-text-field
-                  v-model="description"
-                  label="additional information"
-                ></v-text-field>
-                <v-row>
-                  <v-select v-model="category_id"
-                    :items="getDropdownCategories"
-                    item-value="id"
-                    item-text="name"
-                    label="category"
-                    outlined></v-select>
-                  <v-select v-model="exchange_id"
-                    :items="getDropdownExchanges"
-                    item-value="id"
-                    item-text="name"
-                    label="exchange"
-                    outlined></v-select>
-                </v-row>
-                <v-row
-                  justify="space-around"
-                  align="center"
-                >
-                  <v-chip-group v-model="expires_at">expires?
-                    <v-chip
-                      v-for="(n, i) in expired_types"
-                      :key="i"
-                      :label="true"
-                      :value="n"
-                      v-on:click="showCalendar"
-                      active-class="deep-purple accent-4 white--text"
-                      column>
-                    {{ n > 0 ? n : 'custom' }}
-                    </v-chip>
-                  </v-chip-group>
-                  <v-date-picker v-model="expires_picker" color="green lighten-1" header-color="primary" v-show="expires_picker_visible"></v-date-picker>
-                </v-row>
-                <form action="http://localhost:8080/api/v1/admin/listings"
-                  enctype="multipart/form-data"
-                  method="post">
-                  <input type="file" accept="image/*" ref="input" @change=uploadImages() multiple>
-                  <v-btn v-on:click="createCard" v-show="this.$store.getters['users/getCurrentUserName']">Create that shit!</v-btn>
-                </form>
-              </div>
-            </v-card-text>
-          </v-card>
-        </v-flex>
-      </v-layout>
-    </v-container>
+    <div>
+      <label>create listing...</label>
+      <!-- errors -->
+      <div
+        v-if="errors.length"
+        type="error"
+        prominent>
+        <ul>
+          <li
+            v-for="error in errors"
+            :key="error">
+            {{ error }}
+          </li>
+        </ul>
+      </div>
+      <div>
+        <!-- listing type -->
+        <div>
+          <input type="radio" v-model="listing_type" id="offering" name="Offering" value="offering">
+          <label for="offering">Offering</label>
+          <input type="radio" v-model="listing_type" id="request" name="Request" value="request">
+          <label for="request">Request</label>
+        </div>
+        <base-image-viewer
+          v-bind:images="this.images"
+          v-bind:isPreview="true">
+        </base-image-viewer>
+        <div>
+          <input
+            type="text"
+            class="showBorder"
+            v-model="title"
+            required
+            placeholder="what is it?">
+        </div>
+        <div>
+          <input
+            type="text"
+            class="showBorder"
+            v-model="description"
+            placeholder="additional information">
+        </div>
+        <div>
+          <label>Category:</label>
+          <select v-model="category_id" class="showBorder">
+            <option
+              v-for="category in getDropdownCategories"
+              :key="category.id"
+              :value="category.id">{{ category.name }}</option>
+          </select>
+          <label>Exchange:</label>
+          <select v-model="exchange_id" class="showBorder">
+            <option
+              v-for="exchange in getDropdownExchanges"
+              :key="exchange.id"
+              :value="exchange.id">{{ exchange.name }}</option>
+          </select>
+        </div>
+        <div>
+          <input type="button"
+            v-for="(key, index) in expired_types"
+            :key="index"
+            v-bind:value="getExpiredValue(key)"
+            v-on:click="showCalendar(index)">
+              <!-- {{ key > 0 ? key : 'custom' }} -->
+        </div>
+        <input type="date" v-model="expires_picker" v-show="expires_picker_visible">
+        <!-- <div id="container">
+          <label>expires?</label>
+          <div class="showBorder" v-for="(key, index) in expired_types" :key="index">
+            <input type="button" :id="index" v-on:click="showCalendar(index)">
+              {{ key > 0 ? key : 'custom' }}
+          </div>
+          <input type="date" v-model="expires_picker" v-show="expires_picker_visible">
+          </div> -->
+        <div>
+          <form
+            @submit.prevent
+            enctype="multipart/form-data"
+            action="http://localhost:8080/listings"
+            method="post">
+            <input type="file" accept="image/*" ref="input" @change=uploadImages() multiple>
+            <button v-on:click="createCard" v-show="this.$store.getters['users/getCurrentUserName']">Create that shit!</button>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -143,7 +133,8 @@ export default {
     getExchanges () {
       this.fetchExchanges()
     },
-    showCalendar () {
+    showCalendar (index) {
+      this.expires_at = this.expired_types[index]
       this.expires_picker_visible = this.expires_at === 0
     },
     uploadImages () {
@@ -184,6 +175,9 @@ export default {
     },
     setError (error, text) {
       this.error = (error.response && error.response.data && error.response.data.error)
+    },
+    getExpiredValue (key) {
+      return key > 0 ? key : 'custom'
     }
   },
   computed: {
@@ -203,5 +197,22 @@ export default {
 </script>
 
 <style scoped>
-
+button {
+  margin: 5px;
+}
+input[type=text] {
+  width: 400px;
+  margin: 5px 0px;
+}
+.showBorder {
+  border: 2px solid red;
+  border-radius: 4px;
+  padding: 5px;
+}
+div#container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  padding-top: 10px;
+}
 </style>
