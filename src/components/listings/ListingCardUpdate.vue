@@ -1,155 +1,88 @@
 <template>
-  <div class="create" id="app" data-app>
-    <v-container>
-      <v-layout>
-        <v-flex sm9 sm6>
-          <v-card width="700px">
-            <v-card-text hover class="pt-1">
-              <div>
-                <router-link :to="{ name: 'listings' }">home</router-link>
-                <v-card-title>update listing...</v-card-title>
-                <v-alert
-                  v-if="errors.length"
-                  type="error"
-                  prominent
-                >
-                  <b>Please correct the following error(s):</b>
-                  <ul>
-                    <li
-                      v-for="error in errors"
-                      :key="error"
-                    >
-                      {{ error }}
-                    </li>
-                  </ul>
-                </v-alert>
-                <v-row>
-                  <!-- listing type -->
-                  <v-col>
-                    <v-radio-group
-                      v-model="listing.listing_type"
-                      row>
-                      <v-radio
-                        label="Offering"
-                        value="offering"
-                      ></v-radio>
-                      <v-radio
-                        label="Request"
-                        value="request"
-                      ></v-radio>
-                    </v-radio-group>
-                  </v-col>
-                  <!-- upload images -->
-                  <v-col>
-                    <form action="http://localhost:8080/api/v1/admin/listings/image_listings"
-                      enctype="multipart/form-data"
-                      method="post">
-                      <input type="file" accept="image/*" ref="input" @change="createImages()" multiple>
-                    </form>
-                  </v-col>
-                </v-row>
-                <!-- preview images -->
-                <base-image-viewer
-                  v-if="this.images"
-                  v-bind:images="this.images"
-                  v-bind:isPreview="true"></base-image-viewer>
-                <!-- source images -->
-                <base-image-viewer
-                  v-if="listing.images.length > 0"
-                  v-bind:images="listing.images"
-                  v-bind:listingId="listing.id"
-                  v-bind:isPreview="false"></base-image-viewer>
-                <!-- title -->
-                <v-text-field
-                  v-model="listing.title"
-                  label="What do you want to give or get?"
-                  required
-                ></v-text-field>
-                <!-- description -->
-                <v-text-field
-                  v-model="listing.description"
-                  label="additional information"
-                ></v-text-field>
-                <v-row>
-                  <!-- category -->
-                  <v-col>
-                    <v-select v-model="listing.category.id"
-                      :items="getDropdownCategories"
-                      item-value="id"
-                      item-text="name"
-                      label="category"
-                      outlined></v-select>
-                  </v-col>
-                  <!-- exchange -->
-                  <v-col>
-                  <v-select v-model="listing.exchange.id"
-                    :items="getDropdownExchanges"
-                    item-value="id"
-                    item-text="name"
-                    label="exchange"
-                    outlined></v-select>
-                  </v-col>
-                </v-row>
-                <!-- vuetify date-picker dialog/menu  -->
-                <v-row
-                  justify="space-around"
-                  align="center"
-                  >
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-menu
-                      ref="menu"
-                      v-model="menu"
-                      :close-on-content-click="false"
-                      :return-value.sync="date"
-                      transition="scale-transition"
-                      offset-y
-                      min-width="auto"
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          v-model="date"
-                          label="Expires"
-                          prepend-icon="mdi-calendar"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker
-                        v-model="date"
-                        no-title
-                        scrollable
-                      >
-                        <v-spacer></v-spacer>
-                        <v-btn
-                          text
-                          color="primary"
-                          @click="menu = false"
-                        >
-                          Cancel
-                        </v-btn>
-                        <v-btn
-                          text
-                          color="primary"
-                          @click="$refs.menu.save(date)"
-                        >
-                          OK
-                        </v-btn>
-                      </v-date-picker>
-                    </v-menu>
-                  </v-col>
-                </v-row>
-                <v-btn v-on:click="updateCard" v-show="this.$store.getters['users/getCurrentUserName']">Update!</v-btn>
-              </div>
-            </v-card-text>
-          </v-card>
-        </v-flex>
-      </v-layout>
-    </v-container>
+  <div class="update" id="app" data-app>
+    <div>
+      <router-link :to="{ name: 'listings' }">home</router-link>
+      <label>update listing...</label>
+      <!-- errors -->
+      <div
+        v-if="errors.length"
+        type="error"
+        prominent>
+        <ul>
+          <li
+            v-for="error in errors"
+            :key="error">
+            {{ error }}
+          </li>
+        </ul>
+      </div>
+      <div>
+        <!-- listing type -->
+        <div>
+          <input type="radio" v-model="listing.listing_type" id="offering" name="Offering" value="offering">
+          <label for="offering">Offering</label>
+          <input type="radio" v-model="listing.listing_type" id="request" name="Request" value="request">
+          <label for="request">Request</label>
+        </div>
+        <!-- upload images -->
+        <div>
+          <form
+            @submit.prevent
+            enctype="multipart/form-data"
+            action="http://localhost:8080/listings"
+            method="put">
+            <input type="file" accept="image/*" ref="input" @change=createImages() multiple>
+          </form>
+        </div>
+        <!-- preview images -->
+        <base-image-viewer
+          v-if="this.images"
+          v-bind:images="this.images"
+          v-bind:isPreview="true"></base-image-viewer>
+        <!-- source images -->
+        <base-image-viewer
+          v-if="listing.images.length > 0"
+          v-bind:images="listing.images"
+          v-bind:listingId="listing.id"
+          v-bind:isPreview="false"></base-image-viewer>
+        <!-- title -->
+        <div>
+          <input
+            type="text"
+            class="showBorder"
+            v-model="listing.title"
+            required
+            placeholder="what is it?">
+        </div>
+        <!-- description -->
+        <div>
+          <input
+            type="text"
+            class="showBorder"
+            v-model="listing.description"
+            placeholder="additional information">
+        </div>
+        <!-- category and exchange -->
+        <div>
+          <label>Category:</label>
+          <select v-model="listing.category.id" class="showBorder">
+            <option
+              v-for="category in getDropdownCategories"
+              :key="category.id"
+              :value="category.id">{{ category.name }}</option>
+          </select>
+          <label>Exchange:</label>
+          <select v-model="listing.exchange.id" class="showBorder">
+            <option
+              v-for="exchange in getDropdownExchanges"
+              :key="exchange.id"
+              :value="exchange.id">{{ exchange.name }}</option>
+          </select>
+        </div>
+        <input type="date" v-model="listing.expires_at">
+        <button v-on:click="updateCard" v-show="this.$store.getters['users/getCurrentUserName']" class="showBorder">UPDATE</button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -309,6 +242,7 @@ export default {
   },
   computed: {
     getDropdownCategories: function () {
+      console.log(this.listing)
       return this.$store.getters['categories/getCategories']
     },
     getDropdownExchanges: function () {
@@ -324,5 +258,10 @@ export default {
 </script>
 
 <style scoped>
+.showBorder {
+  border: 2px solid red;
+  border-radius: 4px;
+  padding: 5px;
+}
 
 </style>
