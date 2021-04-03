@@ -7,7 +7,6 @@
 * Webpack configuration
 * Axios
 * Vuex
-* Vuetify
 
 ## Build Setup
 

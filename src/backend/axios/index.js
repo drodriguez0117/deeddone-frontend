@@ -41,11 +41,11 @@ securedAxiosInstance.interceptors.response.use(null, async error => {
   if (error.response && error.response.config && error.response.status === 401) {
     try {
       plainAxiosInstance.get('/login')
-        .then(response => store.commit('users/setCurrentUser', { currentUser: response }))
+        .then(response => store.commit('users/enableUser', { currentUser: response }))
 
       return plainAxiosInstance.request()
     } catch (error) {
-      store.commit('users/unsetCurrentUser')
+      store.commit('users/disableUser')
       location.replace('/login')
       return Promise.reject(error)
     }

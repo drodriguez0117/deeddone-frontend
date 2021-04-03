@@ -113,8 +113,8 @@ export default {
     async searchListings ({ commit }, query) {
       await plainAxiosInstance.get('/listings/search', {
         params: {
-          qry: query,
-          filter_path: 'hits.hits._source'
+          filter_path: 'hits.hits._source',
+          qry: query
         }
       })
         .then((response) => {
