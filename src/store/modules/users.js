@@ -22,7 +22,7 @@ export default {
     }
   },
   mutations: {
-    setCurrentUser (state, payload) {
+    enableUser (state, payload) {
       state.currentUser = payload
       state.loggedIn = true
       state.token = payload.token
@@ -30,7 +30,7 @@ export default {
       localStorage.setItem('jwt', payload.token)
       axios.defaults.headers.common['Authorization'] = `Bearer ${payload.token}`
     },
-    unsetCurrentUser (state, payload) {
+    disableUser (state, payload) {
       state.currentUser = {}
       state.loggedIn = false
       state.errors.push(payload)
@@ -43,11 +43,11 @@ export default {
     async signIn ({ commit }, user) {
       await plainAxiosInstance.post('/login', {email: user.email, password: user.password})
         .then((response) => {
-          commit('setCurrentUser', response.data)
+          commit('enableUser', response.data)
           return Promise.resolve(response)
         })
         .catch((error) => {
-          commit('unsetCurrentUser', error.message)
+          commit('disableUser', error.message)
           return Promise.reject(error)
         })
     },
@@ -55,10 +55,10 @@ export default {
       await plainAxiosInstance.post('/register', user)
         .then(({ response }) => {
           if (!response.data.error) {
-            commit('setCurrentUser', response.data)
+            commit('enableUser', response.data)
             return Promise.resolve(response)
           } else {
-            commit('unsetCurrentUser', response.data.error)
+            commit('disableUser', response.data.error)
             return Promise.reject(response.data.error)
           }
         })
@@ -67,12 +67,7 @@ export default {
         })
     },
     signOut ({ commit }) {
-      commit('unsetCurrentUser', null)
-      // await securedAxiosInstance.delete('/login')
-      //   .then((response) => { return Promise.resolve(response) })
-      //   .catch((error) => {
-      //     return Promise.reject(error)
-      //   })
+      commit('disableUser', null)
     }
   },
   plugins: [createPersistedState]
