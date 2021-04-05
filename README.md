@@ -1,6 +1,9 @@
 # deeddone-frontend
 
-> Vue.js project for deeddone
+> Vue.js project for deeddone.
+> This is the master branch prior to removing vuetify for updating
+> to vue3.  I shouldn't have merged the remove_vuetify branch
+> with master so I created as new branch without_vuetify.
 
 ## Technologies
 
