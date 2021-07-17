@@ -73,14 +73,14 @@
                 >
                   <v-chip-group v-model="expires_at">expires?
                     <v-chip
-                      v-for="(n, i) in expired_types"
-                      :key="i"
+                      v-for="(key, index) in expired_types"
+                      :key="index"
                       :label="true"
-                      :value="n"
-                      v-on:click="showCalendar"
+                      :value="key"
+                      v-on:click="showCalendar(index)"
                       active-class="deep-purple accent-4 white--text"
                       column>
-                    {{ n > 0 ? n : 'custom' }}
+                    {{ key > 0 ? key : 'custom' }}
                     </v-chip>
                   </v-chip-group>
                   <v-date-picker v-model="expires_picker" color="green lighten-1" header-color="primary" v-show="expires_picker_visible"></v-date-picker>
@@ -143,7 +143,8 @@ export default {
     getExchanges () {
       this.fetchExchanges()
     },
-    showCalendar () {
+    showCalendar (index) {
+      this.expires_at = this.expired_types[index]
       this.expires_picker_visible = this.expires_at === 0
     },
     uploadImages () {

@@ -68,11 +68,6 @@ export default {
     },
     signOut ({ commit }) {
       commit('unsetCurrentUser', null)
-      // await securedAxiosInstance.delete('/login')
-      //   .then((response) => { return Promise.resolve(response) })
-      //   .catch((error) => {
-      //     return Promise.reject(error)
-      //   })
     }
   },
   plugins: [createPersistedState]
