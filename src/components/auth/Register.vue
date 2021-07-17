@@ -20,8 +20,8 @@
                     <b>Please correct the following error(s):</b>
                     <ul>
                       <li
-                        v-for="error in errors"
-                        :key="error"
+                        v-for="(error, index) in errors"
+                        :key="index"
                       >
                         {{ error }}
                       </li>
@@ -44,7 +44,9 @@
                     min="8"
                     required
                   ></v-text-field>
-                  <v-btn type="submit" color="primary">Sign Up</v-btn>
+                  <v-btn
+                    type="submit"
+                    class="showBorder">Sign Up</v-btn>
                 </v-form>
               </div>
             </v-card-text>
@@ -77,7 +79,7 @@ export default {
   },
   methods: {
     register () {
-      if (!this.errors.length) {
+      if (!this.errors.length && this.validateRegistration()) {
         const newUser = {
           email: this.email,
           password: this.password,
@@ -93,7 +95,7 @@ export default {
         this.$router.push('/')
       }
     },
-    validateRegistration: function (e) {
+    validateRegistration (e) {
       this.errors = []
 
       if (!this.email) {
@@ -121,7 +123,8 @@ export default {
       if (this.email && this.password && this.password_confirmation) {
         return true
       }
-      e.preventDefault()
+      // e.preventDefault()
+      return false
     },
     validEmail: function (email) {
       var reg = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
@@ -133,9 +136,15 @@ export default {
 
 <style lang="css">
   .form-register {
-    width: 70%;
-    max-width: 500px;
-    padding: 10% 15px;
+    height: 350px;
+    width: 300px;
+    padding: 15px;
     margin: 0 auto;
+    border: 2px solid;
   }
+  .showBorder {
+    border: 2px solid red;
+    border-radius: 4px;
+    padding: 5px;
+}
 </style>

@@ -52,8 +52,8 @@ export default {
         })
     },
     async register ({ commit }, user) {
-      await plainAxiosInstance.post('/register', user)
-        .then(({ response }) => {
+      await plainAxiosInstance.post('/register', {email: user.email, password: user.password, password_confirmation: user.password_confirmation})
+        .then((response) => {
           if (!response.data.error) {
             commit('setCurrentUser', response.data)
             return Promise.resolve(response)
